@@ -2,6 +2,7 @@ require("@nomicfoundation/hardhat-toolbox")
 require("hardhat-contract-sizer")
 require("@openzeppelin/hardhat-upgrades")
 require("./tasks")
+require("hardhat-deploy")
 require("@chainlink/env-enc").config()
 const { networks } = require("./networks")
 
@@ -22,6 +23,10 @@ module.exports = {
     compilers: [
       {
         version: "0.8.7",
+        settings: SOLC_SETTINGS,
+      },
+      {
+        version: "0.8.6",
         settings: SOLC_SETTINGS,
       },
       {
@@ -50,6 +55,13 @@ module.exports = {
           ]
         : [],
     },
+    goerli: {
+      chainId: 5,
+      accounts: [process.env.PRIVATE_KEY],
+      url: process.env.GOERLI_RPC_URL,
+      blockConfirmations: 6,
+    },
+
     ...networks,
   },
   etherscan: {
@@ -59,6 +71,7 @@ module.exports = {
       sepolia: networks.ethereumSepolia.verifyApiKey,
       polygonMumbai: networks.polygonMumbai.verifyApiKey,
       avalancheFujiTestnet: networks.avalancheFuji.verifyApiKey,
+      goerli: process.env.ETHERSCAN_API_KEY,
     },
   },
   gasReporter: {
@@ -79,5 +92,11 @@ module.exports = {
   },
   mocha: {
     timeout: 200000, // 200 seconds max for running tests
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+      1: 0,
+    },
   },
 }
