@@ -20,8 +20,9 @@ interface KeeperRegistrarInterface {
 }
 
 contract SmartPayrollFactory {
-  event UpkeepContractCreateAddress(address,SmartPayrollByTime.contractParams );
+  event UpkeepContractCreateAddress(address,SmartPayrollByTime.contractParams,uint256 );
   event upKeeperCreate(uint256,RegistrationParams);
+
 
   constructor() {}
 
@@ -34,10 +35,12 @@ contract SmartPayrollFactory {
 
   function createUpkeepContract(
     SmartPayrollByTime.contractParams memory _upkeepContractParams
+    ,uint256 _amount
   ) external  {
-    SmartPayrollByTime smartPayrollByTime = new SmartPayrollByTime(_upkeepContractParams);
-    emit UpkeepContractCreateAddress(address(smartPayrollByTime),_upkeepContractParams);
+    SmartPayrollByTime smartPayrollByTime = new SmartPayrollByTime(_upkeepContractParams, _amount);
+    emit UpkeepContractCreateAddress(address(smartPayrollByTime),_upkeepContractParams, _amount);
   }
+
 
   function createKeeper(
     address _keeperRegistar,

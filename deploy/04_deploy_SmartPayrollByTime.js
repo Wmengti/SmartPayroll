@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-21 23:04:16
+ * @LastEditTime: 2023-05-23 15:41:41
  * @Description: 
  */
 const { verify} = require("../utils/verify")
@@ -18,7 +18,7 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   const developmentChains = ["hardhat", "localhost"]
   //https://docs.chain.link/chainlink-automation/supported-networks/
 
-  args =[60,"0x28F894ffe4f1CBC0E57ce3ec26c58BE88bc670F7","0x55C76828DF0ef0EB13DEA4503C8FAad51Abd00Ad",100000000]
+  args =[[180, '0x81A9205F956A1D6ae81f51977Da9702A023e199a', '0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad', '0x55C76828DF0ef0EB13DEA4503C8FAad51Abd00Ad', '3'],"1000000"]
  
   const smartPayrollByTime = await deploy("SmartPayrollByTime", {
     from: deployer,
