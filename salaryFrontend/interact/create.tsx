@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-26 16:13:29
+ * @LastEditTime: 2023-05-26 16:33:57
  * @Description: 
  */
 import { utils,ethers } from "ethers"
@@ -106,12 +106,17 @@ export const create = async ()=>{
   
   //deply functionFactory automation consumer
   console.log('create automation functions')
-  const deployTx = await functionFactory.createAutomatedFunctions(
-    networkConfig[NETWORK].functionsOracleProxy,
-    subscriptionId,
-    200000,
+  // const deployTx = await functionFactory.createAutomatedFunctions(
+  //   networkConfig[NETWORK].functionsOracleProxy,
+  //   subscriptionId,
+  //   200000,
+  //   60
+  // )
+  const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
     60
   )
+
+ 
 
 
   console.log(`\nWaiting 1 block for transaction ${deployTx.hash} to be confirmed...`)
