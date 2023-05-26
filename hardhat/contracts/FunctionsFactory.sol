@@ -21,4 +21,6 @@ contract FuntionsFactory {
     emit autoFunctionEvent(address(autoFunction),_subscriptionId,_updateInterval);
   }
 
+
+
 }

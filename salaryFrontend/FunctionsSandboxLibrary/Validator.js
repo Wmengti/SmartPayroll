@@ -30,14 +30,10 @@ class Validator {
           }
         }
       }
-      if (
-        validInput.secrets &&
-        (typeof validInput.secrets !== "object" ||
-          !Object.values(validInput.secrets).every((s) => {
-            return typeof s === "string"
-          }))
-      ) {
-        throw Error("secrets param not a string map")
+      if (validInput.secrets && typeof validInput.secrets !== "object") {
+        if (!Array.isArray(validInput.secrets)) {
+          throw Error("secrets param not an object")
+        }
       }
       this.maxResponseBytes = this.defaultMaxResponseBytes
       if (validInput.maxResponseBytes) {

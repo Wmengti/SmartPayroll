@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-25 14:27:33
+ * @LastEditTime: 2023-05-26 14:11:23
  * @Description: 
  */
 import { mainnet, polygon, sepolia, polygonMumbai } from 'wagmi/chains';
@@ -63,7 +63,6 @@ export const networkConfig = {
     linkToken: '0xb0897686c545045afc77cf20ec7a532e3120e0f1',
   },
   polygonMumbai: {
-    functionFactory:'0xFef062C4d9DA6cE8877C13381D4bc6dB63e30c1F',
     linkToken: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
     linkEthPriceFeed: '0x12162c3E810393dEC01362aBf156D7ecf6159528',
     functionsOracleProxy: '0xeA6721aC65BCeD841B8ec3fc5fEdeA6141a0aDE4',
@@ -86,4 +85,3 @@ export const VERIFICATION_BLOCK_CONFIRMATIONS = 2;
 
 export const NETWORK ="polygonMumbai";
 
-export const functionFactoryABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"","type":"address"},{"indexed":false,"internalType":"uint64","name":"","type":"uint64"},{"indexed":false,"internalType":"uint256","name":"","type":"uint256"}],"name":"autoFunctionEvent","type":"event"},{"inputs":[{"internalType":"address","name":"oracle","type":"address"},{"internalType":"uint64","name":"_subscriptionId","type":"uint64"},{"internalType":"uint32","name":"_fulfillGasLimit","type":"uint32"},{"internalType":"uint256","name":"_updateInterval","type":"uint256"}],"name":"createAutomatedFunctions","outputs":[],"stateMutability":"nonpayable","type":"function"}]

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-25 14:13:22
+ * @LastEditTime: 2023-05-26 13:59:22
  * @Description: 
  */
 /*
@@ -11,7 +11,8 @@
 const { verify} = require("../utils/verify")
 const { writeFile} = require("../utils/writeFile")
 const {  
-  functionsFactoryPath} = require("../utils/config")
+  functionsFactoryPath
+,functionsFactoryABI} = require("../utils/config")
   const fs = require("fs")
 
 const { ethers } = require("hardhat")
@@ -31,7 +32,13 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   })
 
   writeFile(functionsFactoryPath,network.name ,funtionsFactory.address);
-  
+  const funtionsFactoryProvider = await ethers.getContract('FuntionsFactory');
+
+  fs.writeFileSync(
+    functionsFactoryABI,
+    funtionsFactoryProvider.interface.format(ethers.utils.FormatTypes.json)
+  );
+
 
 
 

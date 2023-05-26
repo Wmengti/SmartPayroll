@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-25 14:35:33
+ * @LastEditTime: 2023-05-25 17:15:02
  * @Description:
  */
 import { Button,Text } from "@chakra-ui/react"

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-25 15:17:13
+ * @LastEditTime: 2023-05-25 16:18:41
  * @Description: 
  */
 
@@ -24,7 +24,7 @@ const config = {
     operationName: "Proposal",
     query: \`  
     query Proposal {
-      proposal(id:"${proposalID}") {
+      proposal(id:"{{proposalID}}") {
        id
        votes
        scores

@@ -107,15 +107,14 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   }
 
   function contractDestruct() external {
-     if(IERC20(ERC20Token).balanceOf(address(this)) >0){
-        console.log("balance erc20",IERC20(ERC20Token).balanceOf(address(this)));
-        IERC20(ERC20Token).transfer(sender, IERC20(ERC20Token).balanceOf(address(this)));
-        console.log("balance erc20",IERC20(ERC20Token).balanceOf(address(this)));
-     }
-     if(address(this).balance>0){
-        payable(sender).transfer(address(this).balance);
-     }
-    
+    if (IERC20(ERC20Token).balanceOf(address(this)) > 0) {
+      console.log("balance erc20", IERC20(ERC20Token).balanceOf(address(this)));
+      IERC20(ERC20Token).transfer(sender, IERC20(ERC20Token).balanceOf(address(this)));
+      console.log("balance erc20", IERC20(ERC20Token).balanceOf(address(this)));
+    }
+    if (address(this).balance > 0) {
+      payable(sender).transfer(address(this).balance);
+    }
   }
 
   receive() external payable {}

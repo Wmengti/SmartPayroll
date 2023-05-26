@@ -1,19 +1,7 @@
 "use strict"
+// Removed simulateRequest and getDecodedResultLog
 Object.defineProperty(exports, "__esModule", { value: true })
-exports.getRequestConfig = exports.buildRequest = exports.getDecodedResultLog = exports.simulateRequest = void 0
-var simulateRequest_1 = require("./simulateRequest")
-Object.defineProperty(exports, "simulateRequest", {
-  enumerable: true,
-  get: function () {
-    return simulateRequest_1.simulateRequest
-  },
-})
-Object.defineProperty(exports, "getDecodedResultLog", {
-  enumerable: true,
-  get: function () {
-    return simulateRequest_1.getDecodedResultLog
-  },
-})
+exports.getRequestConfig = exports.buildRequest = void 0
 var buildRequest_1 = require("./buildRequest")
 Object.defineProperty(exports, "buildRequest", {
   enumerable: true,
