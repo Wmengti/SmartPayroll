@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-26 16:33:57
+ * @LastEditTime: 2023-05-26 17:36:45
  * @Description: 
  */
 import { utils,ethers } from "ethers"
@@ -106,15 +106,18 @@ export const create = async ()=>{
   
   //deply functionFactory automation consumer
   console.log('create automation functions')
-  // const deployTx = await functionFactory.createAutomatedFunctions(
+  const deployTx = await functionFactory.createAutomatedFunctions(
+    networkConfig[NETWORK].functionsOracleProxy,
+    subscriptionId,
+    200000,
+    60
+  )
+  // const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
   //   networkConfig[NETWORK].functionsOracleProxy,
   //   subscriptionId,
   //   200000,
   //   60
   // )
-  const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
-    60
-  )
 
  
 

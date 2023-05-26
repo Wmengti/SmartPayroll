@@ -13,7 +13,7 @@ import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
  * DO NOT USE THIS CODE IN PRODUCTION.
  */
 
-contract AutomatedFunctions is FunctionsClient, ConfirmedOwner, AutomationCompatibleInterface {
+contract AutomatedFunctionsConsumer is FunctionsClient, ConfirmedOwner, AutomationCompatibleInterface {
   using Functions for Functions.Request;
 
   bytes public requestCBOR;
@@ -72,4 +72,6 @@ contract AutomatedFunctions is FunctionsClient, ConfirmedOwner, AutomationCompat
     responseCounter = responseCounter + 1;
     emit OCRResponse(requestId, response, err);
   }
+
+  
 }
