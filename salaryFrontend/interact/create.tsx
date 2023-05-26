@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-26 14:58:33
+ * @LastEditTime: 2023-05-26 16:13:29
  * @Description: 
  */
 import { utils,ethers } from "ethers"
@@ -119,39 +119,38 @@ export const create = async ()=>{
   console.log(deployReceipt.events[0])
   console.log(deployReceipt.events[0].args[0])
   const functinConsumerAddress = deployReceipt.events[0].args[0]
-  //add request to FunctionConsumer 
-  const functinConsumer = new ethers.Contract(
-    functinConsumerAddress,
-    functionAutoConsumerABI,
-    signer
-  )
+  ////////////////////////////////////////////////////////////////
+  // //add request to FunctionConsumer 
+  // const functinConsumer = new ethers.Contract(
+  //   functinConsumerAddress,
+  //   functionAutoConsumerABI,
+  //   signer
+  // )
   
-  const requestConfig:ExtendedRequestConfig = getRequestConfig('JP');
-  console.log(requestConfig)
-  const DONPublicKey = await oracle.getDONPublicKey();
-  // Remove the preceding 0x from the DON public key
-  requestConfig.DONPublicKey = DONPublicKey.slice(2);
-  // Build the parameters to make a request from the client contract
-  const request:requestType = await buildRequest(requestConfig);
-  console.log(request)
+  // const requestConfig:ExtendedRequestConfig = getRequestConfig('0xab619164329aea8c44dcf8ca3dab3cfc5a31afa7450eb151210d6a651a1a5e18');
+  // console.log(requestConfig)
+  // const DONPublicKey = await oracle.getDONPublicKey();
+  // // Remove the preceding 0x from the DON public key
+  // requestConfig.DONPublicKey = DONPublicKey.slice(2);
+  // // Build the parameters to make a request from the client contract
+  // const request:requestType = await buildRequest(requestConfig);
+  // console.log(request)
  
-  // functinConsumer
-  console.log('start generate request')
-  const functionsRequestBytes = await functinConsumer.generateRequest(
-    request.source,
-    request.secrets ?? [],
-    request.args ?? ['JP']
-  )
-  console.log("Setting Functions request")
-  const setRequestTx = await functinConsumer.setRequest(
-    subscriptionId,
-    200000,
-    300,
-    functionsRequestBytes
-  )
-  await setRequestTx.wait(2)
+  // // functinConsumer
+  // console.log('start generate request')
+  // const functionsRequestBytes = await functinConsumer.generateRequest(
+  //   request.source,
+  //   request.secrets ?? [],
+  //   request.args ?? ['JP']
+  // )
+  // console.log("Setting Functions request")
+  // const setRequestTx = await functinConsumer.setRequest(
+  //   functionsRequestBytes
+  // )
+  // await setRequestTx.wait(2)
 
-  console.log(setRequestTx)
+  // console.log(setRequestTx)
+  ////////////////////////////////////////////////////////////////
   const registrarParams = [
     "testFunctions",
     utils.formatBytes32String(""),
@@ -160,7 +159,7 @@ export const create = async ()=>{
     '0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad',
     utils.formatBytes32String(""),
     utils.formatBytes32String(""),
-    utils.parseUnits("0.5", 18),
+    utils.parseUnits("0.3", 18),
   ]
   const smartPayrollFactory = new ethers.Contract(
     smartPayrollFactoryAddress[NETWORK],

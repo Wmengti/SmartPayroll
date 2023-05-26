@@ -18,7 +18,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_updateInterval",
+        "name": "updateInterval",
         "type": "uint256"
       }
     ],
@@ -181,6 +181,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "counter",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "components": [
@@ -326,6 +339,32 @@
   },
   {
     "inputs": [],
+    "name": "interval",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lastTimeStamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "lastUpkeepTimeStamp",
     "outputs": [
       {
@@ -431,21 +470,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint64",
-        "name": "_subscriptionId",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_fulfillGasLimit",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_updateInterval",
-        "type": "uint256"
-      },
-      {
         "internalType": "bytes",
         "name": "newRequestCBOR",
         "type": "bytes"
@@ -483,19 +507,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "updateInterval",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -506,19 +517,6 @@
     "name": "updateOracleAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "upkeepCounter",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ]
