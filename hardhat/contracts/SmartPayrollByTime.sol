@@ -30,6 +30,9 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   address public immutable receiver;
   address public immutable ERC20Token;
   address public immutable sender;
+  address public constant DAOAddress = '0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad'
+
+  
 
   error IsZeroAddress();
 
@@ -107,12 +110,13 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   }
 
   function contractDestruct() external {
-    if (IERC20(ERC20Token).balanceOf(address(this)) > 0) {
+    if (IERC20(ERC20Token).balanceOf(address(this)) > amount) {
+
       console.log("balance erc20", IERC20(ERC20Token).balanceOf(address(this)));
       IERC20(ERC20Token).transfer(sender, IERC20(ERC20Token).balanceOf(address(this)));
       console.log("balance erc20", IERC20(ERC20Token).balanceOf(address(this)));
     }
-    if (address(this).balance > 0) {
+    if (address(this).balance > amount) {
       payable(sender).transfer(address(this).balance);
     }
   }

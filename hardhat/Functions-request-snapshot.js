@@ -1,30 +1,27 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-27 11:22:03
- * @Description: 
+ * @LastEditTime: 2023-05-26 20:44:28
+ * @Description:
  */
 
-const source =
-`const proposalID = args[0]
-
+const proposalID = args[0]
 
 if (!proposalID) {
   throw Error("Proposal ID is required")
 }
 
-
 const config = {
   url: "https://testnet.snapshot.org/graphql?",
   method: "POST",
-  proxy:false,
+  proxy: false,
   headers: {
     "content-type": "application/json",
   },
   params: {
     operationName: "Proposal",
-    query: \`  
+    query: `
     query Proposal {
-      proposal(id:"\${proposalID}") {
+      proposal(id:"${proposalID}") {
        id
        votes
        scores
@@ -34,17 +31,12 @@ const config = {
        quorum
      }
      }
-    \`,
+    `,
     variables: null,
   },
 }
 
-
-
-
 const response = await Functions.makeHttpRequest(config)
-
-
 
 console.log(response)
 
@@ -64,7 +56,4 @@ const scores = response.data.data.proposal.scores
 const choices = response.data.data.proposal.choices
 const highestIndex = scores.indexOf(Math.max(...scores))
 
-
-return Functions.encodeString(choices[highestIndex])`;
-
-module.exports = source;
+return Functions.encodeString(choices[highestIndex])

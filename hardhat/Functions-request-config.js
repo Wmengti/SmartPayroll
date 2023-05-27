@@ -1,15 +1,12 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-27 11:22:15
- * @Description: 
+ * @LastEditTime: 2023-05-26 21:10:06
+ * @Description:
  */
-// const fs = require("fs")
-const source = require('./Functions-request-snapshot')
-// const source = require('./Functions-request-source')
-
+const fs = require("fs")
 
 // Loads environment variables from .env.enc file (if it exists)
-// require("@/../hardhat/node_modules/@chainlink/env-enc/dist").config()
+require("@chainlink/env-enc").config()
 
 const Location = {
   Inline: 0,
@@ -31,37 +28,33 @@ const ReturnType = {
 }
 
 // Configure the request by setting the fields below
-const requestConfig =(args)=> {
-  return{
+const requestConfig = {
   // Location of source code (only Inline is currently supported)
   codeLocation: Location.Inline,
-  secretsLocation: Location.Inline,
   // Code language (only JavaScript is currently supported)
   codeLanguage: CodeLanguage.JavaScript,
   // String containing the source code to be executed
-  source,
+  source: fs.readFileSync("./Functions-request-source.js").toString(),
   //source: fs.readFileSync('./API-request-example.js').toString(),
   // Secrets can be accessed within the source code with `secrets.varName` (ie: secrets.apiKey). The secrets object can only contain string values.
-  secrets: {  },
+  secrets: {
+    apiKey: process.env.COINMARKETCAP_API_KEY ?? "",
+    openaiKey: process.env.OPEN_AI_API_KEY ?? "",
+    nftgoKey: process.env.NFTGO_API ?? "",
+  },
   // Per-node secrets objects assigned to each DON member. When using per-node secrets, nodes can only use secrets which they have been assigned.
   perNodeSecrets: [],
   // ETH wallet key used to sign secrets so they cannot be accessed by a 3rd party
-  walletPrivateKey: '',
+  walletPrivateKey: process.env["PRIVATE_KEY"],
   // Args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
- args,
+  // args: ["0xab619164329aea8c44dcf8ca3dab3cfc5a31afa7450eb151210d6a651a1a5e18"],
+  args:["JP"],
+  // args: ["can you tell me what you are doing"],
+  // args: ["New York City", "Washington DC"],
   // Expected type of the returned value
   expectedReturnType: ReturnType.string,
   // Redundant URLs which point to encrypted off-chain secrets
   secretsURLs: [],
-  globalOffchainSecrets: {},
-  // Per-node offchain secrets objects used by the `functions-build-offchain-secrets` command
-  perNodeOffchainSecrets: [],
-  }
 }
 
 module.exports = requestConfig
-
-
-
-
-

@@ -1,3 +1,8 @@
+/*
+ * @Author: Wmengti 0x3ceth@gmail.com
+ * @LastEditTime: 2023-05-26 20:55:44
+ * @Description: 
+ */
 const { networks } = require("../../networks")
 
 task("functions-sub-add", "Adds a client contract to the Functions billing subscription")

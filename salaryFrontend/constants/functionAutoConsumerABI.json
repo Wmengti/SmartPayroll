@@ -468,6 +468,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "sendRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes",

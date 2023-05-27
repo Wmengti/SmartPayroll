@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-27 11:51:13
+ * @LastEditTime: 2023-05-27 11:03:38
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -45,7 +45,7 @@ interface requestType {
     args?:any[] 
 }
 
-export const create = async ()=>{
+export const createAuto = async ()=>{
 
   const signer= configProvider().getSigner();
   const provider= configProvider().getProvider();
@@ -140,7 +140,7 @@ export const create = async ()=>{
     signer
   )
   
-  const requestConfig:ExtendedRequestConfig = getRequestConfig(['0xab619164329aea8c44dcf8ca3dab3cfc5a31afa7450eb151210d6a651a1a5e18']);
+  const requestConfig:ExtendedRequestConfig = getRequestConfig(['JP']);
   console.log(requestConfig) 
   const DONPublicKey = await oracle.getDONPublicKey();
   // Remove the preceding 0x from the DON public key
@@ -180,99 +180,33 @@ export const create = async ()=>{
   await setRequestTx.wait(2)
 
   console.log(setRequestTx)
-
-
-  // Check that the subscription is valid
-  let subInfo
-  try {
-    subInfo = await   registryFactory.getSubscription(subscriptionId)
-  } catch (error:any) {
-    if (error.errorName === "InvalidSubscription") {
-      throw Error(`Subscription ID "${subscriptionId}" is invalid or does not exist`)
-    }
-    throw error
-  }
-  // Validate the client contract has been authorized to use the subscription
-  const existingConsumers = subInfo[2].map((addr:any) => addr.toLowerCase())
-  if (!existingConsumers.includes(functinConsumerAddress.toLowerCase())) {
-    throw Error(`Consumer contract ${functinConsumerAddress} is not registered to use subscription ${subscriptionId}`)
-  }
-
-
   
-  // Estimate the cost of the request
 
 
-  // Ensure that the subscription has a sufficient balance
+  ////////////////////////////////////////////////////////////////
+  const registrarParams = [
+    "testFunctions",
+    utils.formatBytes32String(""),
+    functinConsumerAddress,
+    "700000",
+    '0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad',
+    utils.formatBytes32String(""),
+    utils.formatBytes32String(""),
+    utils.parseUnits("0.5", 18),
+  ]
+  const smartPayrollFactory = new ethers.Contract(
+    smartPayrollFactoryAddress[NETWORK],
+    smartPayrollFactoryABI,
+    signer
+  )
+  let tx = await smartPayrollFactory?.createKeeper(KeeperAutoSelfRegisterAddress[NETWORK], registrarParams)
 
+  const receipt = await tx.wait(1)
 
+  const upKeepId = receipt.events[0]
+  console.log("upkeep", upKeepId)
+  ////////////////////////////////////////////////////////////////
 
-  //  TODO: add cost of this LINK in USD
-
-  // doGistCleanup indicates if an encrypted secrets Gist was created automatically and should be cleaned up once the request is complete
- 
- 
-
-  // Use a promise to wait & listen for the fulfillment event before returning
-  await new Promise(async (resolve, reject) => {
-    let requestId:any
-
-
-    // Initiate the listeners before making the request
-    // Listen for fulfillment errors
    
-    // Listen for successful fulfillment, both must be true to be finished
-    let billingEndEventReceived = false
-    let ocrResponseEventReceived = false
-    functinConsumer.on("OCRResponse", async (eventRequestId, result, err) => {
-      // Ensure the fulfilled requestId matches the initiated requestId to prevent logging a response for an unrelated requestId
-      if (eventRequestId !== requestId) {
-        return
-      }
-
-      console.log(`Request ${requestId} fulfilled! Data has been written on-chain.\n`)
-      if (result !== "0x") {
-        console.log(
-          `Response returned to client contract represented as a hex string: ${ethers.utils.toUtf8String(result)}\n`
-        )
-
-      }
-      if (err !== "0x") {
-        console.log(`Error message returned to client contract: "${Buffer.from(err.slice(2), "hex")}"\n`)
-      }
-      ocrResponseEventReceived = true
-      
-
-    })
-   
-
-    // Initiate the on-chain request after all listeners are initialized
-    console.log("Sending Functions request")
-    const sendRequestTx = await functinConsumer.sendRequest()
-    console.log("Waiting 2 blocks for transaction to be confirmed...")
-    const requestTxReceipt = await sendRequestTx.wait(2)
-    console.log(
-      `Transaction confirmed, see 
-         \${requestTxReceipt.hash}
-      } for more details.`
-    )
-
-    requestId = requestTxReceipt.events[2].args.id
-    console.log(
-      `Request ${requestId} has been initiated. Waiting for fulfillment from the Decentralized Oracle Network...\n`
-    )
-
-    // If a response is not received in time, the request has exceeded the Service Level Agreement
-    setTimeout(async () => {
-      console.log(
-        "A response has not been received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request."
-      )
-     
-      reject()
-    }, 300_000) // TODO: use registry timeout seconds
-  })
-
-
-
 
 }

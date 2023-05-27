@@ -1,28 +1,28 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-27 11:14:15
- * @Description:
+ * @LastEditTime: 2023-05-27 09:36:30
+ * @Description: 
  */
 // No authentication. demonstrate POST with data in body
 // callgraphql api: https://github.com/trevorblades/countries
 // docs: https://trevorblades.github.io/countries/queries/continent
 
 // make HTTP request
-const source =`
 const countryCode = args[0]
 const url = "https://countries.trevorblades.com/"
-
+console.log(`Get name, capital and currency for country code: ${countryCode}`)
+console.log(`HTTP POST Request to ${url}`)
 const countryRequest = Functions.makeHttpRequest({
   url: url,
   method: "POST",
   data: {
-    query: \`{\
-        country(code: "\${countryCode}") { \
+    query: `{\
+        country(code: "${countryCode}") { \
           name \
           capital \
           currency \
         } \
-      }\`,
+      }`,
   },
 })
 
@@ -30,7 +30,7 @@ const countryRequest = Functions.makeHttpRequest({
 const countryResponse = await countryRequest
 if (countryResponse.error) {
   console.error(
-    countryResponse.response ? \`\${countryResponse.response.status},\${countryResponse.response.statusText}\` : ""
+    countryResponse.response ? `${countryResponse.response.status},${countryResponse.response.statusText}` : ""
   )
   throw Error("Request failed")
 }
@@ -38,7 +38,7 @@ if (countryResponse.error) {
 const countryData = countryResponse["data"]["data"]
 
 if (!countryData || !countryData.country) {
-  throw Error(\`Make sure the country code "\${countryCode}" exists\`)
+  throw Error(`Make sure the country code "${countryCode}" exists`)
 }
 
 console.log("country response", countryData)
@@ -53,6 +53,3 @@ const result = {
 // Use JSON.stringify() to convert from JSON object to JSON string
 // Finally, use the helper Functions.encodeString() to encode from string to bytes
 return Functions.encodeString(JSON.stringify(result))
-
-`
-module.exports = source;
