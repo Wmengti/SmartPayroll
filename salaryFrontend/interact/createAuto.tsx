@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-27 11:03:38
+ * @LastEditTime: 2023-05-29 13:30:12
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -203,7 +203,7 @@ export const createAuto = async ()=>{
 
   const receipt = await tx.wait(1)
 
-  const upKeepId = receipt.events[0]
+  const upKeepId = BigInt(receipt.events[3].topics[1]).toString()
   console.log("upkeep", upKeepId)
   ////////////////////////////////////////////////////////////////
 

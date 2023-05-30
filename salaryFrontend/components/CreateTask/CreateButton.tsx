@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-22 18:31:27
+ * @LastEditTime: 2023-05-29 16:41:41
  * @Description:
  */
 import { Button } from "@chakra-ui/react"
@@ -13,7 +13,7 @@ import { NETWORK } from "@/utils/config"
 import {useTaskContext} from "@/contexts/taskProvider"
 
 
-export default function ContractButton() {
+export default function CreateButton() {
   const taskParams = useTaskContext();
   const [isLoad, setIsLoad] = useState(false)
   const smartPayrollFactory = useMemo(() => {
@@ -32,11 +32,14 @@ export default function ContractButton() {
 
   const contractNFTHandle = async () => {
     console.log("trigger1")
+   
     setIsLoad(true)
     try {
-      let tx = await smartPayrollFactory?.createTask(taskParams.receiver)
-      tx.wait(1)
-      taskParams.updateHaveContract(true)
+      const tx = await smartPayrollFactory?.createTask(taskParams.receiver,taskParams.contractName)
+      const receiptTx = await tx.wait(1)
+      taskParams.updateButtonType('write')
+      console.log('address',receiptTx.events[0].address)
+      taskParams.updateContractAddress(receiptTx.events[0].address)
       
     } catch (err) {
       console.log("create contract factory error:" + err)
@@ -44,11 +47,15 @@ export default function ContractButton() {
     setIsLoad(false)
   }
 
-
-
+ 
+ 
   return (
+    <>
     <Button isLoading={isLoad} loadingText="Submitting" colorScheme="teal" variant="solid" onClick={contractNFTHandle}>
       Submit
     </Button>
+   
+  </>
+
   )
 }

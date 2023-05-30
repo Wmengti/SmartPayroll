@@ -1,3 +1,8 @@
+/*
+ * @Author: Wmengti 0x3ceth@gmail.com
+ * @LastEditTime: 2023-05-27 22:21:06
+ * @Description: 
+ */
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
@@ -11,19 +16,19 @@ export default function Document() {
 				<link
 					rel='apple-touch-icon'
 					sizes='180x180'
-					href='/favicon/apple-touch-icon.png'
+					href='/money.png'
 				/>
 				<link
 					rel='icon'
 					type='image/png'
 					sizes='32x32'
-					href='/favicon/favicon-32x32.png'
+					href='/money.png'
 				/>
 				<link
 					rel='icon'
 					type='image/png'
 					sizes='16x16'
-					href='/favicon/favicon-16x16.png'
+					href='/money.png'
 				/>
 				<link rel='manifest' href='/favicon/site.webmanifest' />
 

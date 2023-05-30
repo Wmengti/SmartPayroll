@@ -1,3 +1,8 @@
+/*
+ * @Author: Wmengti 0x3ceth@gmail.com
+ * @LastEditTime: 2023-05-29 10:13:42
+ * @Description: 
+ */
 const { verify} = require("../utils/verify")
 const { writeFile} = require("../utils/writeFile")
 const {contractNFTPath,contractNFTABI} = require("../utils/config")
@@ -10,7 +15,7 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   const { deployer } = await getNamedAccounts()
   const developmentChains = ["hardhat", "localhost"]
 
-  args = ["0x55C76828DF0ef0EB13DEA4503C8FAad51Abd00Ad"]
+  args = []
   const contractNFT = await deploy("ContractNFT", {
     from: deployer,
     args: args,
@@ -29,4 +34,4 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   }
 }
 
-module.exports.tags = ["ContractNFT", "all","firstCreate"]
+module.exports.tags = ["ContractNFT","firstCreate"]

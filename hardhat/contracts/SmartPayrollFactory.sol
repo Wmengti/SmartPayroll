@@ -21,14 +21,16 @@ interface KeeperRegistrarInterface {
 
 contract SmartPayrollFactory {
   event UpkeepContractCreateAddress(address,SmartPayrollByTime.contractParams,uint256 );
-  event upKeeperCreate(uint256,RegistrationParams);
+  event UpKeeperCreate(uint256,RegistrationParams);
+  event CreateContractNFT(address,string);
 
 
   constructor() {}
 
-  function createTask(address _employeeAddress) external {
+  function createTask(address _employeeAddress,string memory contractName) external {
     require(msg.sender != _employeeAddress, "Do not send to yourself");
-    ContractNFT contractNFT = new ContractNFT(_employeeAddress);
+    ContractNFT contractNFT = new ContractNFT(_employeeAddress,contractName);
+    emit CreateContractNFT(address(contractNFT),contractName);
     contractNFT.safeMint(msg.sender);
     contractNFT.safeMint(_employeeAddress);
   }
@@ -50,7 +52,7 @@ contract SmartPayrollFactory {
 
     KeeperRegistrarInterface regustrar = KeeperRegistrarInterface(_keeperRegistar);
     uint256 keeperID = regustrar.registerAndPredictID(_registarParams);
-    emit upKeeperCreate(keeperID,_registarParams);
+    emit UpKeeperCreate(keeperID,_registarParams);
     
   }
 }

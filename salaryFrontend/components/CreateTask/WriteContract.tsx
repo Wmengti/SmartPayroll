@@ -13,7 +13,7 @@ import {
 import { tokenList } from "@/utils/tokenList"
 
 import { useTaskContext } from "@/contexts/taskProvider"
-import TaskButton from "@/components/Button/TaskButton"
+import WriteButton from "@/components/CreateTask/WriteButton"
 import {useEffect} from "react"
 
 /*
@@ -21,7 +21,7 @@ import {useEffect} from "react"
  * @LastEditTime: 2023-05-20 11:21:32
  * @Description:
  */
-export default function Task() {
+export default function WriteContract() {
   const taskParams = useTaskContext()
 
   const tokenSelectHandler = (e: any) => {
@@ -136,7 +136,7 @@ export default function Task() {
           </div>
           
 
-          <TaskButton />
+          <WriteButton />
         </form>
       </Box>
     </>

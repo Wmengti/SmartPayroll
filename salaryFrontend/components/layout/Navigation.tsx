@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
-
+import {useAccount} from 'wagmi'
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-19 21:01:17
@@ -10,6 +10,7 @@ interface Props {
   origin:string;
 }
 const Navigation = (props:Props)=>{
+  const {address} = useAccount();
   return (
   <div className='flex flex-col h-[10vh] items-center justify-between pt-2 px-10'>
   <div className='z-10 w-full max-w-7xl items-center justify-between font-mono text-sm lg:flex '>
@@ -25,7 +26,7 @@ const Navigation = (props:Props)=>{
         Create Task
       </Link>
       <Link 
-      href={`${props.origin}/CheckMoment`}
+      href={`${props.origin}/CheckMoment/${address}`}
       className='rounded-lg border p-2 border-transparent transition-colors hover:border-gray-600 hover:border-neutral-700 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'>
         Check Moment
       </Link>

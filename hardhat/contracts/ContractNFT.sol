@@ -12,35 +12,56 @@ contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
   using Counters for Counters.Counter;
   using Strings for uint256;
   Counters.Counter private _tokenIdCounter;
-
+  uint256 private time;
+  string private contractName;
+  
   bytes32 public constant EMPLOYER_ROLE = keccak256("EMPLOYER_ROLE");
   bytes32 public constant EMPLOYEE_ROLE = keccak256("EMPLOYEE_ROLE");
 
   event Attest(address indexed to, uint256 indexed firstTokenId);
   event Revoke(address indexed to, uint256 indexed firstTokenId);
 
-  constructor(address _employeeAddress) ERC721("Contract Soul Bound Token", "CBT") {
+
+
+  
+  constructor(address _employeeAddress,string memory _name) ERC721("Contract Soul Bound Token", "CBT") {
+    contractName = _name;
+    time = block.timestamp;
     _grantRole(EMPLOYER_ROLE, msg.sender);
     _grantRole(EMPLOYEE_ROLE, _employeeAddress);
   }
+  
 
-  function generateImage(uint256 tokenId) public returns (string memory) {
-    bytes memory svg = abi.encodePacked(
-        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-        '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
-        '<rect width="100%" height="100%" fill="black" />',
-        '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior",'</text>',
-        '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Levels: ",tokenId,'</text>',
-        '</svg>'
-    );
-    return string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(svg)));
-  }
+    function generateImage(uint256 tokenId) public returns (string memory) {
+        bytes memory svg = abi.encodePacked(
+            '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
+            "<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>",
+            '<rect width="100%" height="100%" fill="black" />',
+            '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            contractName,
+            "</text>",
+            '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            "BlockDateTime: ",
+            time.toString(),
+            "</text>",
+            "</svg>"
+        );
+        return
+            string(
+                abi.encodePacked(
+                    "data:image/svg+xml;base64,",
+                    Base64.encode(svg)
+                )
+            );
+    }
+
+  
 
   function getTokenURI(uint256 tokenId) public returns (string memory) {
     bytes memory dataURI = abi.encodePacked(
             '{',
-                '"name": "Chain Battles #', tokenId.toString(), '",',
-                '"description": "Battles on chain",',
+                '"name": "smart payroll contract #', tokenId.toString(), '",',
+                '"description": "smart payroll on chain",',
                 '"image": "', generateImage(tokenId), '"',
             '}'
         );

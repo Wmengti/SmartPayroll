@@ -33,4 +33,4 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   }
 }
 
-module.exports.tags = ["keeperManager", "all"]
+module.exports.tags = ["keeperManager"]
