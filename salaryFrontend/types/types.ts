@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 11:06:25
+ * @LastEditTime: 2023-05-30 20:57:43
  * @Description: 
  */
 export type ContractModel = {
@@ -21,6 +21,7 @@ export type ContractModel = {
     proposalID?:string 
     endTime?:string
     upkeeperContract?: string
+    upKeepId?: string
     image?: string
     
 }

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 14:41:19
+ * @LastEditTime: 2023-05-31 10:40:28
  * @Description:
  */
 import { useState } from 'react';
@@ -21,14 +21,17 @@ export default function CheckMoment(props:any) {
   };
 
   return (
-    <div className='flex mt-10 mx-10 gap-10'>
+    <div>
+    <div className='grid grid-cols-4 mt-10 mx-10 gap-10'>
       {
-        props.contracts.map((contract:any)=>(
-          <CardChakra contract={contract}/>
+        props.contracts.map((contract:any,index:number)=>(
+          <CardChakra key={index} contract={contract}/>
         ))
       }
       
-      {/* <CreateRequest /> */}
+      
+    </div>
+    <CreateRequest />
     </div>
   );
 }

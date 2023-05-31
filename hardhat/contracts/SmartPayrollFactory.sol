@@ -18,6 +18,9 @@ struct RegistrationParams {
 interface KeeperRegistrarInterface {
   function registerAndPredictID(RegistrationParams memory params) external returns (uint256);
 }
+interface IcreditToken {
+  function mint(address to, uint256 amount) external ;
+}
 
 contract SmartPayrollFactory {
   event UpkeepContractCreateAddress(address,SmartPayrollByTime.contractParams,uint256 );
@@ -38,8 +41,9 @@ contract SmartPayrollFactory {
   function createUpkeepContract(
     SmartPayrollByTime.contractParams memory _upkeepContractParams
     ,uint256 _amount
+    ,address _credit
   ) external  {
-    SmartPayrollByTime smartPayrollByTime = new SmartPayrollByTime(_upkeepContractParams, _amount);
+    SmartPayrollByTime smartPayrollByTime = new SmartPayrollByTime(_upkeepContractParams, _amount,address(this),_credit);
     emit UpkeepContractCreateAddress(address(smartPayrollByTime),_upkeepContractParams, _amount);
   }
 
@@ -54,5 +58,11 @@ contract SmartPayrollFactory {
     uint256 keeperID = regustrar.registerAndPredictID(_registarParams);
     emit UpKeeperCreate(keeperID,_registarParams);
     
+  }
+
+  function CreditMint(address _creditAddress,address _employer,address _employee) external {
+    IcreditToken(_creditAddress).mint(_employer,10000000000000000000);
+    IcreditToken(_creditAddress).mint(_employee,10000000000000000000);
+
   }
 }

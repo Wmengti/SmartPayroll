@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-23 15:41:41
+ * @LastEditTime: 2023-05-30 20:40:14
  * @Description: 
  */
 const { verify} = require("../utils/verify")
@@ -28,7 +28,7 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   })
 
   writeFile(smartPayrollByTimePath,network.name ,smartPayrollByTime.address);
-  fs.writeFileSync(smartPayrollByTimePath, JSON.stringify(smartPayrollByTime.address));
+
   const smartPayrollByTimeProvider = await ethers.getContract('SmartPayrollByTime');
 
   fs.writeFileSync(
@@ -42,4 +42,4 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   }
 }
 
-module.exports.tags = ["keeperAutoSelfRegister", "all","SmartPayrollByTime"]
+module.exports.tags = ["keeperAutoSelfRegister","SmartPayrollByTime"]

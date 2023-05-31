@@ -6,16 +6,20 @@ import CreateContract from '@/components/CreateTask/CreateContract'
 import WriteContract from '@/components/CreateTask/WriteContract'
 import UpkeeperContract from '@/components/CreateTask/UpkeeperContract'
 import {useTaskContext} from "@/contexts/taskProvider"
+import { useEffect } from "react"
 
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-29 16:36:09
+ * @LastEditTime: 2023-05-31 10:28:41
  * @Description:
  */
 export default function CreateTask() {
   const taskParams = useTaskContext();
 
   console.log("what",taskParams.buttonType)
+  useEffect(()=>{
+    taskParams.updateButtonType('create')
+  },[])
 
 
   return (

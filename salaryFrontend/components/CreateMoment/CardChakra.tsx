@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 14:04:20
+ * @LastEditTime: 2023-05-31 09:56:59
  * @Description:
  */
 import {
@@ -32,10 +32,13 @@ import {
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { useTaskContext } from '@/contexts/taskProvider';
+import { useAccount } from 'wagmi';
+import { createAuto } from '@/interact/createAuto';
 
 const CardChakra = (props: any) => {
   const taskParams = useTaskContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {address} = useAccount();
   console.log(props);
 
   const initialRef = React.useRef(null);
@@ -64,6 +67,8 @@ const CardChakra = (props: any) => {
   const saveHandler = async () => {
     taskParams.updateState('cancel');
     await fetchHandler(uploadData);
+    onClose();
+    await createAuto();
     console.log("done")
 
   };
@@ -94,15 +99,15 @@ const CardChakra = (props: any) => {
             borderRadius='lg'
           />
           <Stack mt='6' spacing='3'>
-            <Heading size='md'>{props.contract.title}</Heading>
+            <Heading size='md'>{props.contract.contractName}</Heading>
           </Stack>
         </CardBody>
         <Divider />
         <CardFooter>
           <ButtonGroup spacing='2'>
-            <Button variant='solid' colorScheme='blue' onClick={onOpen}>
+            {props.contract.receiver !=address && <Button isDisabled={props.contract.state=='cancel'} variant='solid' colorScheme='blue' onClick={onOpen}>
               Terminate
-            </Button>
+            </Button>}
             <Button variant='ghost' colorScheme='blue'>
               go to detail
             </Button>

@@ -14,6 +14,9 @@ import "hardhat/console.sol";
  * DO NOT USE THIS CODE IN PRODUCTION.
  */
 
+interface ISmartPayrollFactory {
+  function CreditMint(address _creditAddress,address _employer,address _employee) external;
+}
 contract SmartPayrollByTime is AutomationCompatibleInterface {
   /**
    * Public counter variable
@@ -30,6 +33,8 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   address public immutable receiver;
   address public immutable ERC20Token;
   address public immutable sender;
+  address public immutable factory;
+  address public immutable credit;
   address public constant DAOAddress = 0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad;
 
   
@@ -44,7 +49,7 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
     uint256 _round;
   }
 
-  constructor(contractParams memory _contractParams, uint256 _amount) {
+  constructor(contractParams memory _contractParams, uint256 _amount,address _factory,address _credit) {
     interval = _contractParams.updateInterval;
     lastTimeStamp = block.timestamp;
     ERC20Token = _contractParams._erc20Address;
@@ -52,6 +57,8 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
     sender = _contractParams._sender;
     receiver = _contractParams._receiver;
     round = _contractParams._round;
+    factory = _factory;
+    credit = _credit;
 
     counter = 0;
   }
@@ -93,6 +100,7 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
         require(IERC20(ERC20Token).balanceOf(address(this)) >= amount, "Not enough token");
         IERC20(ERC20Token).transfer(receiver, amount);
       }
+      ISmartPayrollFactory(factory).CreditMint(credit,sender,receiver);
       lastTimeStamp = block.timestamp;
       counter = counter + 1;
     }

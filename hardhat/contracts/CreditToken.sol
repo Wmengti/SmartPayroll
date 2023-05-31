@@ -14,10 +14,10 @@ contract CreditToken is ERC20, ERC20Snapshot, AccessControl, ERC20Permit {
   event Attest(address indexed to, uint256 indexed amount);
   event Revoke(address indexed to, uint256 indexed amount);
 
-  constructor() ERC20("CreditToken", "CT") ERC20Permit("CreditToken") {
+  constructor(address _minter) ERC20("CreditToken", "CT") ERC20Permit("CreditToken") {
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _grantRole(SNAPSHOT_ROLE, msg.sender);
-    _grantRole(MINTER_ROLE, msg.sender);
+    _grantRole(MINTER_ROLE, _minter);
   }
 
   function snapshot() public onlyRole(SNAPSHOT_ROLE) {

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-29 13:30:12
+ * @LastEditTime: 2023-05-31 09:55:23
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -140,7 +140,7 @@ export const createAuto = async ()=>{
     signer
   )
   
-  const requestConfig:ExtendedRequestConfig = getRequestConfig(['JP']);
+  const requestConfig:ExtendedRequestConfig = getRequestConfig(['0x24c34d474a6f916961ece6fad389000a8bde897ab2f62904c46f78ee7cc08585']);
   console.log(requestConfig) 
   const DONPublicKey = await oracle.getDONPublicKey();
   // Remove the preceding 0x from the DON public key

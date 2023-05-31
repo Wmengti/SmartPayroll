@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-29 18:03:44
+ * @LastEditTime: 2023-05-31 11:22:29
  * @Description:
  */
 import { Button, Text } from '@chakra-ui/react';
@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import { useTaskContext } from '@/contexts/taskProvider';
 import { tokenList } from '@/utils/tokenList';
 import { Base64 } from 'js-base64';
+import creditTokenAddress from "@/constants/creditTokenAddress.json"
 
 import contractNFTABI from '@/constants/contractNFTABI.json';
 
@@ -193,11 +194,13 @@ export default function WriteButton() {
         taskParams.tokenAmount!.toString(),
         tokenList[taskParams.tokenNumber!].Symbol
       );
-
+      console.log(upContractParams)
+      console.log(creditTokenAddress[NETWORK])
       console.log(smartPayrollFactory);
       let tx = await smartPayrollFactory?.createUpkeepContract(
         upContractParams,
-        amount
+        amount,
+        creditTokenAddress[NETWORK]
       );
       const receipt = await tx.wait(1);
       console.log(receipt.events[0]);

@@ -6,13 +6,15 @@ const {
   creditTokenABI} = require("../utils/config")
 const fs = require("fs")
 const hre = require("hardhat")
+const {networks,NETWORK} = require("../networks")
+const factoryAddress = require("../../salaryFrontend/constants/smartPayrollFactoryAddress.json")
 
 module.exports = async ({ deployments, getNamedAccounts }) => {
   const { deploy, log } = deployments
   const { deployer } = await getNamedAccounts()
   const developmentChains = ["hardhat", "localhost"]
 
-  args = []
+  args = [factoryAddress[NETWORK]]
   const creditToken = await deploy("CreditToken", {
     from: deployer,
     args: args,

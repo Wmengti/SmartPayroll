@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 11:30:49
+ * @LastEditTime: 2023-05-31 09:21:02
  * @Description:
  */
 import { Button,Text } from "@chakra-ui/react"
@@ -89,6 +89,7 @@ export default function WriteButton() {
     proposalID:taskParams.proposalID,
     endTime:taskParams.endTime,
     upkeeperContract: taskParams.upkeeperContract,
+    upKeepId: taskParams.upKeepId,
     image:taskParams.image
   }
 
@@ -124,7 +125,7 @@ export default function WriteButton() {
 
       await fetchHandler(uploaData)
       taskParams.updateButtonType('check')
-      router.push('/CheckMoment')
+      router.push(`/CheckMoment/${address}`)
     } catch (err) {
       console.log("create contract factory error:" + err)
     }
