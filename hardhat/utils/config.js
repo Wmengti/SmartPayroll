@@ -1,10 +1,10 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-26 14:05:24
+ * @LastEditTime: 2023-05-31 15:55:00
  * @Description: 
  */
-const contractNFTPath = "../salaryFrontend/constants/contractNFTAddress.json"
-const contractNFTABI ='../salaryFrontend/constants/contractNFTABI.json'
+const contractNFTPath = "../salaryFrontend/constants/contractNFTFactoryAddress.json"
+const contractNFTABI ='../salaryFrontend/constants/contractNFTFactoryABI.json'
 const creditTokenPath = "../salaryFrontend/constants/creditTokenAddress.json"
 const creditTokenABI ='../salaryFrontend/constants/creditTokenABI.json'
 const keeperAutoSelfRegisterPath = "../salaryFrontend/constants/keeperAutoSelfRegisterAddress.json"

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 14:04:03
+ * @LastEditTime: 2023-06-01 10:33:04
  * @Description:
  */
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -8,7 +8,7 @@ import { MongoClient } from 'mongodb';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const url = process.env.NEXT_PUBLIC_MOGONDB_URL;
-  console.log(url);
+ 
   if (req.method === 'POST') {
     const data = req.body;
     const client = await MongoClient.connect(url!);

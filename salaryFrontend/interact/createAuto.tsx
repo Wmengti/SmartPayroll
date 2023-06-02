@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 09:55:23
+ * @LastEditTime: 2023-06-01 15:31:13
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -45,7 +45,14 @@ interface requestType {
     args?:any[] 
 }
 
-export const createAuto = async ()=>{
+interface ParamsConfigType {
+  DAOAddress: string,
+  FactoryAddress: string,
+  endTime:string,
+  proposalID:string,
+}
+
+export const createAuto = async (Params:ParamsConfigType)=>{
 
   const signer= configProvider().getSigner();
   const provider= configProvider().getProvider();
@@ -106,11 +113,16 @@ export const createAuto = async ()=>{
   
   //deply functionFactory automation consumer
   console.log('create automation functions')
+  const timestamp = new Date(Params.endTime).getTime()
+  console.log(Params.endTime)
+  console.log(timestamp/1000)
   const deployTx = await functionFactory.createAutomatedFunctions(
     networkConfig[NETWORK].functionsOracleProxy,
     subscriptionId,
     200000,
-    60
+    timestamp/1000,
+    Params.DAOAddress,
+    Params.FactoryAddress
   )
   // const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
   //   networkConfig[NETWORK].functionsOracleProxy,
@@ -140,7 +152,7 @@ export const createAuto = async ()=>{
     signer
   )
   
-  const requestConfig:ExtendedRequestConfig = getRequestConfig(['0x24c34d474a6f916961ece6fad389000a8bde897ab2f62904c46f78ee7cc08585']);
+  const requestConfig:ExtendedRequestConfig = getRequestConfig([Params.proposalID]);
   console.log(requestConfig) 
   const DONPublicKey = await oracle.getDONPublicKey();
   // Remove the preceding 0x from the DON public key
@@ -185,7 +197,7 @@ export const createAuto = async ()=>{
 
   ////////////////////////////////////////////////////////////////
   const registrarParams = [
-    "testFunctions",
+    "testFunctions0601",
     utils.formatBytes32String(""),
     functinConsumerAddress,
     "700000",

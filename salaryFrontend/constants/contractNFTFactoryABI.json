@@ -1,0 +1,1 @@
+[{"type":"constructor","payable":false,"inputs":[]},{"type":"event","anonymous":false,"name":"CreateContractNFT","inputs":[{"type":"address","indexed":false},{"type":"string","indexed":false}]},{"type":"function","name":"createTask","constant":false,"payable":false,"inputs":[{"type":"address","name":"_employeeAddress"},{"type":"string","name":"contractName"}],"outputs":[]}]

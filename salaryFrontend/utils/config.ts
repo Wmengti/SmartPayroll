@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-26 14:11:23
+ * @LastEditTime: 2023-05-31 14:47:02
  * @Description: 
  */
 import { mainnet, polygon, sepolia, polygonMumbai } from 'wagmi/chains';
@@ -65,6 +65,7 @@ export const networkConfig = {
   polygonMumbai: {
     linkToken: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
     linkEthPriceFeed: '0x12162c3E810393dEC01362aBf156D7ecf6159528',
+    automationRegistry:"0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
     functionsOracleProxy: '0xeA6721aC65BCeD841B8ec3fc5fEdeA6141a0aDE4',
     functionsBillingRegistryProxy: '0xEe9Bf52E5Ea228404bB54BCFbbDa8c21131b9039',
     functionsPublicKey:
@@ -73,6 +74,7 @@ export const networkConfig = {
   sepolia: {
     linkToken: '0x779877A7B0D9E8603169DdbD7836e478b4624789',
     linkEthPriceFeed: '0x42585eD362B3f1BCa95c640FdFf35Ef899212734',
+    automationRegistry:"0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
     functionsOracleProxy: '0x649a2C205BE7A3d5e99206CEEFF30c794f0E31EC',
     functionsBillingRegistryProxy: '0x3c79f56407DCB9dc9b852D139a317246f43750Cc',
     functionsPublicKey:

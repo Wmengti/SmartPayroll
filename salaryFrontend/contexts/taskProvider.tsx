@@ -29,6 +29,7 @@ export interface TaskCreateProviderValues {
   endTime?: string;
   upKeepId?: string;
   image?: string;
+  DAOAddress:string;
 
 
   updateAdminAddress: (adminAddress: string) => void;
@@ -56,6 +57,7 @@ export interface TaskCreateProviderValues {
   updateEndTime: (endTime: string) => void;
   updateUpKeepId: (upKeepId: string) => void;
   updateImage: (image: string) => void;
+  updateDAOAddress: (DAOAdress: string) => void;
 }
 
 const defaultValues = {
@@ -81,6 +83,7 @@ const defaultValues = {
   endTime: '',
   upKeepId:'',
   image:'',
+  DAOAddress:'',
   updateAdminAddress: () => null,
   updateEmailAddress: () => null,
   updateContractName: () => null,
@@ -103,6 +106,7 @@ const defaultValues = {
   updateEndTime: () => null,
   updateUpKeepId: () => null,
   updateImage: () => null,
+  updateDAOAddress:() => null,
 };
 
 const taskContext = createContext<TaskCreateProviderValues>(defaultValues);
@@ -142,6 +146,7 @@ export const TaskContextProvider = ({
   const [endTime, setEndTime] = useState('');
   const [upKeepId,setUpKeepId] = useState('');
   const [image,setImage] = useState('');
+  const [DAOAddress,setDAOAddress] = useState('');
 
 
   const updateAdminAddress = (adminAddress: string) => {
@@ -240,6 +245,9 @@ export const TaskContextProvider = ({
   const updateImage =  (image:string) => {
     setImage(image);
   }
+  const updateDAOAddress = (DAOAddress:string) => {
+    setDAOAddress(DAOAddress);
+  }
 
   return (
     <taskContext.Provider
@@ -266,6 +274,7 @@ export const TaskContextProvider = ({
         endTime,
         upKeepId,
         image,
+        DAOAddress,
         updateAdminAddress,
         updateEmailAddress,
         updateContractName,
@@ -287,7 +296,8 @@ export const TaskContextProvider = ({
         updateProposalID,
         updateEndTime,
         updateUpKeepId,
-        updateImage
+        updateImage,
+        updateDAOAddress,
       }}
     >
       {children}

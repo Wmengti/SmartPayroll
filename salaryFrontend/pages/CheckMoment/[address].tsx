@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 10:40:28
+ * @LastEditTime: 2023-05-31 16:13:37
  * @Description:
  */
 import { useState } from 'react';
@@ -31,7 +31,7 @@ export default function CheckMoment(props:any) {
       
       
     </div>
-    <CreateRequest />
+    {/* <CreateRequest /> */}
     </div>
   );
 }
@@ -78,9 +78,11 @@ export async function getServerSideProps(context:any) {
         proposalID:contract.proposalID, 
         endTime:contract.endTime,
         upkeeperContract:contract.upkeeperContract,
+        upKeepId:contract.upKeepId||'',
         image:contract.image,
+        DAOAddress:contract.DAOAddress||'',
       })),
-
+     
     },
    
   };

@@ -1,14 +1,14 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-29 16:41:41
+ * @LastEditTime: 2023-05-31 15:48:08
  * @Description:
  */
 import { Button } from "@chakra-ui/react"
 
 import { useState, useMemo,useEffect } from "react"
 import { ethers } from "ethers"
-import smartPayrollFactoryAddress from "@/constants/smartPayrollFactoryAddress.json"
-import smartPayrollFactoryABI from "@/constants/smartPayrollFactoryABI.json"
+import contractNFTAddress from "@/constants/contractNFTFactoryAddress.json"
+import contractNFTABI from "@/constants/contractNFTFactoryABI.json"
 import { NETWORK } from "@/utils/config"
 import {useTaskContext} from "@/contexts/taskProvider"
 
@@ -16,17 +16,17 @@ import {useTaskContext} from "@/contexts/taskProvider"
 export default function CreateButton() {
   const taskParams = useTaskContext();
   const [isLoad, setIsLoad] = useState(false)
-  const smartPayrollFactory = useMemo(() => {
+  const contractNFTFactory = useMemo(() => {
     if (typeof window !== "undefined") {
       const { ethereum } = window as any
       const provider = new ethers.providers.Web3Provider(ethereum)
       const signer = provider.getSigner()
-      const smartPayrollFactory = new ethers.Contract(
-        smartPayrollFactoryAddress[NETWORK],
-        smartPayrollFactoryABI,
+      const contractNFTFactory = new ethers.Contract(
+        contractNFTAddress[NETWORK],
+        contractNFTABI,
         signer
       )
-      return smartPayrollFactory
+      return contractNFTFactory
     }
   }, [])
 
@@ -35,7 +35,7 @@ export default function CreateButton() {
    
     setIsLoad(true)
     try {
-      const tx = await smartPayrollFactory?.createTask(taskParams.receiver,taskParams.contractName)
+      const tx = await contractNFTFactory?.createTask(taskParams.receiver,taskParams.contractName)
       const receiptTx = await tx.wait(1)
       taskParams.updateButtonType('write')
       console.log('address',receiptTx.events[0].address)

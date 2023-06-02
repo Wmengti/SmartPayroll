@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 20:19:55
+ * @LastEditTime: 2023-05-31 17:55:02
  * @Description: 
  */
 const { verify} = require("../utils/verify")
@@ -38,4 +38,4 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   }
 }
 
-module.exports.tags = ["keeperAutoSelfRegister", "all","firstCreate"]
+module.exports.tags = ["keeperAutoSelfRegister", "firstCreate"]

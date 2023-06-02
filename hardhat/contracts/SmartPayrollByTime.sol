@@ -35,7 +35,7 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   address public immutable sender;
   address public immutable factory;
   address public immutable credit;
-  address public constant DAOAddress = 0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad;
+  address public immutable DAOAddress;
 
   
 
@@ -49,7 +49,7 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
     uint256 _round;
   }
 
-  constructor(contractParams memory _contractParams, uint256 _amount,address _factory,address _credit) {
+  constructor(contractParams memory _contractParams, uint256 _amount,address _factory,address _credit,address _DAOAddress) {
     interval = _contractParams.updateInterval;
     lastTimeStamp = block.timestamp;
     ERC20Token = _contractParams._erc20Address;
@@ -59,6 +59,7 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
     round = _contractParams._round;
     factory = _factory;
     credit = _credit;
+    DAOAddress =_DAOAddress;
 
     counter = 0;
   }
@@ -118,19 +119,28 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   }
 
   function contractDestruct() external {
-    uint256 tokenBalance = IERC20(ERC20Token).balanceOf(address(this));
-    uint256 ethBalance = address(this).balance;
-    if (tokenBalance > amount) {
-      IERC20(ERC20Token).transfer(DAOAddress,amount);
-      IERC20(ERC20Token).transfer(sender,IERC20(ERC20Token).balanceOf(address(this)));
-    }else if(tokenBalance == amount){
-      IERC20(ERC20Token).transfer(DAOAddress,amount);
-    }
-    if (ethBalance > amount) {
-      payable(DAOAddress).transfer(amount);
-      payable(sender).transfer(address(this).balance);
-    }
-  }
+   
+      if (ERC20Token == address(0)) {
+        bool transferSuccess;
+        require(address(this).balance > amount, "ETH not enough");
+        (transferSuccess, ) = payable(DAOAddress).call{value: amount}("");
+        require(transferSuccess, "Token transfer to DAOAddress failed");
+        // require(address(this).balance > 0 , "ETH not enough");
+        (transferSuccess, ) = payable(sender).call{value: amount}("");
+        // require(transferSuccess, "ETH transfer to sender failed");
+      } else {
+        IERC20 token = IERC20(ERC20Token);
+        require(token.balanceOf(address(this)) >= amount, "Not enough token");
+        bool transferSuccess =  token.transfer(DAOAddress, amount);
+        require(transferSuccess, "Token transfer to DAOAddress failed");
+        // require(token.balanceOf(address(this)) > 0 , "erc20 token not enough");
+        transferSuccess =  token.transfer(sender, token.balanceOf(address(this)));
+        // require(transferSuccess, "erc20 token transfer to sender failed");
+
+      }
+
+}
+
 
   receive() external payable {}
 

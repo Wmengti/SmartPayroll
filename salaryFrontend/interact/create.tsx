@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-27 11:51:13
+ * @LastEditTime: 2023-06-01 14:00:15
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -44,8 +44,12 @@ interface requestType {
     secrets?:any[],
     args?:any[] 
 }
-
-export const create = async ()=>{
+interface ParamsConfigType {
+  DAOAddress: string,
+  FactoryAddress: string,
+  endDate:string
+}
+export const create = async (Params:ParamsConfigType)=>{
 
   const signer= configProvider().getSigner();
   const provider= configProvider().getProvider();
@@ -106,11 +110,14 @@ export const create = async ()=>{
   
   //deply functionFactory automation consumer
   console.log('create automation functions')
+  const timestamp = new Date(Params.endDate).getTime()
   const deployTx = await functionFactory.createAutomatedFunctions(
     networkConfig[NETWORK].functionsOracleProxy,
     subscriptionId,
     200000,
-    60
+    timestamp,
+    Params.DAOAddress,
+    Params.FactoryAddress
   )
   // const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
   //   networkConfig[NETWORK].functionsOracleProxy,
@@ -233,7 +240,8 @@ export const create = async ()=>{
       console.log(`Request ${requestId} fulfilled! Data has been written on-chain.\n`)
       if (result !== "0x") {
         console.log(
-          `Response returned to client contract represented as a hex string: ${ethers.utils.toUtf8String(result)}\n`
+          `Response returned to client contract represented as a hex string: ${ethers.utils.toUtf8String(result)}\n
+          Response returned to client contract represented as a hex string: ${result}\n`
         )
 
       }
@@ -252,8 +260,7 @@ export const create = async ()=>{
     console.log("Waiting 2 blocks for transaction to be confirmed...")
     const requestTxReceipt = await sendRequestTx.wait(2)
     console.log(
-      `Transaction confirmed, see 
-         \${requestTxReceipt.hash}
+      `Transaction confirmed, see ${requestTxReceipt.hash}
       } for more details.`
     )
 

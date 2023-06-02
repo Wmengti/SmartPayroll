@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 11:22:29
+ * @LastEditTime: 2023-06-01 16:41:01
  * @Description:
  */
 import { Button, Text } from '@chakra-ui/react';
@@ -203,8 +203,10 @@ export default function WriteButton() {
         creditTokenAddress[NETWORK]
       );
       const receipt = await tx.wait(1);
-      console.log(receipt.events[0]);
-      const upKeeperContract = receipt.events[0].args[0];
+      console.log(receipt);
+      const DAOAddress = receipt.events[1].args[0];
+      const upKeeperContract = receipt.events[2].args[0];
+      taskParams.updateDAOAddress(DAOAddress);
       taskParams.updateupkeeperContract(upKeeperContract);
       setUpkeeperContract(upKeeperContract);
       console.log('upkeep contract', upkeeperContract);

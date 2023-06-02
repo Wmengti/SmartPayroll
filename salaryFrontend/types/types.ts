@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-30 20:57:43
+ * @LastEditTime: 2023-05-31 16:11:09
  * @Description: 
  */
 export type ContractModel = {
@@ -23,5 +23,6 @@ export type ContractModel = {
     upkeeperContract?: string
     upKeepId?: string
     image?: string
+    DAOAddress?: string
     
 }

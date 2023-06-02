@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 09:21:02
+ * @LastEditTime: 2023-06-01 16:23:08
  * @Description:
  */
 import { Button,Text } from "@chakra-ui/react"
@@ -90,7 +90,8 @@ export default function WriteButton() {
     endTime:taskParams.endTime,
     upkeeperContract: taskParams.upkeeperContract,
     upKeepId: taskParams.upKeepId,
-    image:taskParams.image
+    image:taskParams.image,
+    DAOAddress: taskParams.DAOAddress
   }
 
   const fetchHandler = async (uploaData:ContractModel) => {
@@ -107,7 +108,17 @@ export default function WriteButton() {
     console.log(res);
     
 }
+useEffect(()=>{
+  if(taskParams.upKeepId!='' && taskParams.state!=''){
+    const actionFetch = async ()=>{
+      await fetchHandler(uploaData)
+    taskParams.updateButtonType('check')
+    router.push(`/CheckMoment/${address}`)
+    }
+    actionFetch()
+  }
 
+},[taskParams.upKeepId,taskParams.state])
 
   const createKeeperandle = async () => {
     setIsSecondLoad(true)
@@ -120,12 +131,14 @@ export default function WriteButton() {
 
       const receipt = await tx.wait(1)
       const upKeepId = BigInt(receipt.events[3].topics[1]).toString()
+      console.log("upkeep============", typeof(upKeepId))
       console.log("upkeep", upKeepId)
       taskParams.updateUpKeepId(upKeepId)
+      taskParams.updateState('active')
 
-      await fetchHandler(uploaData)
-      taskParams.updateButtonType('check')
-      router.push(`/CheckMoment/${address}`)
+     
+
+      
     } catch (err) {
       console.log("create contract factory error:" + err)
     }

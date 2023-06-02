@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-29 10:13:42
+ * @LastEditTime: 2023-05-31 15:46:08
  * @Description: 
  */
 const { verify} = require("../utils/verify")
@@ -16,14 +16,14 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   const developmentChains = ["hardhat", "localhost"]
 
   args = []
-  const contractNFT = await deploy("ContractNFT", {
+  const contractNFT = await deploy("ContractNFTFactory", {
     from: deployer,
     args: args,
     log: true,
     waitConfirmations: network.config.blockConfirmations || 1,
   })
   writeFile(contractNFTPath,network.name ,contractNFT.address);
-  const contractNFTProvider = await ethers.getContract('ContractNFT');
+  const contractNFTProvider = await ethers.getContract('ContractNFTFactory');
   fs.writeFileSync(
     contractNFTABI,
     contractNFTProvider.interface.format(ethers.utils.FormatTypes.json)
@@ -34,4 +34,4 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
   }
 }
 
-module.exports.tags = ["ContractNFT","firstCreate"]
+module.exports.tags = ["ContractNFTFactory","firstCreate","all"]
