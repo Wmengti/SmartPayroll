@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-01 16:23:08
+ * @LastEditTime: 2023-06-04 10:40:48
  * @Description:
  */
 import { Button,Text } from "@chakra-ui/react"
@@ -18,6 +18,7 @@ import { useRouter } from "next/router"
 import { useTaskContext } from "@/contexts/taskProvider"
 import { tokenList } from "@/utils/tokenList"
 import {ContractModel} from "@/types/types"
+// import {configProvider} from '@/utils/config';
 
 // interface ContractButtonProps {
 //   addressInput: string
@@ -29,6 +30,7 @@ import {ContractModel} from "@/types/types"
 
 export default function WriteButton() {
   const router = useRouter()
+  // const localsigner= configProvider().getSigner();
   const [isSecondLoad, setIsSecondLoad] = useState(false)
 
 
@@ -37,11 +39,11 @@ export default function WriteButton() {
 
   const taskParams = useTaskContext()
   const registrarParams = [
-    taskParams.contractName,
+    `${taskParams.contractName}_upkeeper`,
     utils.formatBytes32String(taskParams.emailAddress || ""),
     taskParams.upkeeperContract,
     "500000",
-    address,
+    "0xb1BfB47518E59Ad7568F3b6b0a71733A41fC99ad",
     utils.formatBytes32String(""),
     utils.formatBytes32String(""),
     utils.parseUnits("0.5", 18),

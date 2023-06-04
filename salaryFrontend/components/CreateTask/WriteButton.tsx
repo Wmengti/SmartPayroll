@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-01 16:41:01
+ * @LastEditTime: 2023-06-02 13:26:20
  * @Description:
  */
 import { Button, Text } from '@chakra-ui/react';
@@ -10,7 +10,7 @@ import { utils, ethers } from 'ethers';
 import { useAccount } from 'wagmi';
 import smartPayrollFactoryAddress from '@/constants/smartPayrollFactoryAddress.json';
 import smartPayrollFactoryABI from '@/constants/smartPayrollFactoryABI.json';
-import { NETWORK } from '@/utils/config';
+import { NETWORK,networkConfig } from '@/utils/config';
 import KeeperAutoSelfRegisterAddress from '@/constants/KeeperAutoSelfRegisterAddress.json';
 import smartPayrollByTimeABI from '@/constants/smartPayrollByTimeABI.json';
 import ERC20ABI from '@/constants/ERC20ABI.json';
@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import { useTaskContext } from '@/contexts/taskProvider';
 import { tokenList } from '@/utils/tokenList';
 import { Base64 } from 'js-base64';
-import creditTokenAddress from "@/constants/creditTokenAddress.json"
+import creditTokenAddress from '@/constants/creditTokenAddress.json';
 
 import contractNFTABI from '@/constants/contractNFTABI.json';
 
@@ -39,12 +39,19 @@ export default function WriteButton() {
   const [upkeeperContract, setUpkeeperContract] = useState('');
   const taskParams = useTaskContext();
 
+  const amount = ethers.utils.parseUnits(
+    taskParams.tokenAmount!.toString(),
+    tokenList[taskParams.tokenNumber!].Symbol
+  );
   const upContractParams = [
     taskParams.intervalSeconds,
     taskParams.tokenAddress,
     address,
     taskParams.receiver,
     taskParams.roundValue,
+    amount,
+    creditTokenAddress[NETWORK],
+    networkConfig[NETWORK].automationRegistry
   ];
 
   const signer = () => {
@@ -190,17 +197,11 @@ export default function WriteButton() {
   const createUpkeepContractHandle = async () => {
     setFirstIsLoad(true);
     try {
-      const amount = ethers.utils.parseUnits(
-        taskParams.tokenAmount!.toString(),
-        tokenList[taskParams.tokenNumber!].Symbol
-      );
-      console.log(upContractParams)
-      console.log(creditTokenAddress[NETWORK])
+      console.log(upContractParams);
+      console.log(creditTokenAddress[NETWORK]);
       console.log(smartPayrollFactory);
       let tx = await smartPayrollFactory?.createUpkeepContract(
-        upContractParams,
-        amount,
-        creditTokenAddress[NETWORK]
+        upContractParams
       );
       const receipt = await tx.wait(1);
       console.log(receipt);
@@ -236,7 +237,6 @@ export default function WriteButton() {
       ) : (
         ''
       )}
-      
 
       <Button
         isLoading={isFirstLoad}

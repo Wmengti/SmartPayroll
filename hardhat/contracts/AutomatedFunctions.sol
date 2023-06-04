@@ -5,15 +5,16 @@ import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
 // import "@chainlink/contracts/src/v0.8/dev/functions/FunctionsClient.sol"; // Once published
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
+import "./interface/ISmartPayrollFactory.sol";
 
 /**
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
  * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
  * DO NOT USE THIS CODE IN PRODUCTION.
  */
-interface ISmartPayrollByFactory{
-  function withdrawDAOVault(bytes memory response,address _DAOAddress) external;
-} 
+// interface ISmartPayrollFactory{
+//   function withdrawDAOVault(bytes memory response,address _DAOAddress) external;
+// } 
   
 
 
@@ -109,7 +110,7 @@ contract AutomatedFunctions is FunctionsClient, ConfirmedOwner, AutomationCompat
     latestError = err;
     responseCounter = responseCounter + 1;
     // IDAOVault(DAOAddress).withdrawFunds(latestResponse);
-    ISmartPayrollByFactory(factoryAddress).withdrawDAOVault(latestResponse,DAOAddress);
+    ISmartPayrollFactory(factoryAddress).withdrawDAOVault(latestResponse,DAOAddress);
     emit OCRResponse(requestId, response, err);
   }
 

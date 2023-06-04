@@ -3,43 +3,44 @@ pragma solidity ^0.8.7;
 
 // AutomationCompatible.sol imports the functions from both ./AutomationBase.sol and
 // ./interfaces/AutomationCompatibleInterface.sol
+
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "hardhat/console.sol";
+import "./interface/ISmartPayrollFactory.sol";
 
-/**
- * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
- * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
- * DO NOT USE THIS CODE IN PRODUCTION.
- */
 
-interface ISmartPayrollFactory {
-  function CreditMint(address _creditAddress,address _employer,address _employee) external;
-}
-contract SmartPayrollByTime is AutomationCompatibleInterface {
+
+
+// interface ISmartPayrollFactory {
+//   function creditMint(address _creditAddress,address _employer,address _employee) external;
+//   function getUpkeeperID(address _upkeepContract) external returns(uint256);
+// }
+contract SmartPayrollByTime is AutomationCompatible{
   /**
    * Public counter variable
    */
   uint public counter;
-
+  uint public lastTimeStamp;
+  uint public lastBlockNumber;
   /**
    * Use an interval in seconds and a timestamp to slow execution of Upkeep
    */
-  uint public immutable interval;
-  uint public lastTimeStamp;
-  uint public immutable amount;
-  uint public immutable round;
-  address public immutable receiver;
-  address public immutable ERC20Token;
-  address public immutable sender;
-  address public immutable factory;
-  address public immutable credit;
-  address public immutable DAOAddress;
+  uint public immutable i_interval;
+  uint public immutable i_amount;
+  uint public immutable i_round;
+  address public immutable i_receiver;
+  address public immutable i_ERC20Token;
+  address public immutable i_sender;
+  address public immutable i_credit;
+  address public immutable i_DAOAddress;
 
   
 
-  error IsZeroAddress();
+  ISmartPayrollFactory public immutable i_factory;
+
+
 
   struct contractParams {
     uint updateInterval;
@@ -47,25 +48,32 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
     address _sender;
     address _receiver;
     uint256 _round;
+    uint256 _amount;
+    address _credit;
+
   }
 
-  constructor(contractParams memory _contractParams, uint256 _amount,address _factory,address _credit,address _DAOAddress) {
-    interval = _contractParams.updateInterval;
-    lastTimeStamp = block.timestamp;
-    ERC20Token = _contractParams._erc20Address;
-    amount = _amount;
-    sender = _contractParams._sender;
-    receiver = _contractParams._receiver;
-    round = _contractParams._round;
-    factory = _factory;
-    credit = _credit;
-    DAOAddress =_DAOAddress;
+  constructor(contractParams memory _contractParams, address _factory,address _DAOAddress) {
+    i_interval = _contractParams.updateInterval; 
+    i_ERC20Token = _contractParams._erc20Address;
+    i_amount = _contractParams._amount;
+    i_sender = _contractParams._sender;
+    i_receiver = _contractParams._receiver;
+    i_round = _contractParams._round;
+    i_credit = _contractParams._credit;
+    i_DAOAddress =_DAOAddress;
+
+    i_factory =ISmartPayrollFactory(_factory);
+   
+
+
 
     counter = 0;
+    lastTimeStamp = block.timestamp;
   }
 
   // function deposit() payable public {
-  //     if(ERC20Token == address(0)){
+  //     if(ERC20Token == address(0)){i_registry
   //         payable(address(this)).transfer(amount);
   //     }else{
   //         IERC20(ERC20Token).transferFrom(msg.sender,address(this), amount);
@@ -80,62 +88,65 @@ contract SmartPayrollByTime is AutomationCompatibleInterface {
   function checkUpkeep(
     bytes calldata /* checkData */
   ) external view override returns (bool upkeepNeeded, bytes memory /* performData */) {
-    if (ERC20Token == address(0) && address(this).balance > amount) {
-      upkeepNeeded = (block.timestamp - lastTimeStamp) > interval && counter < round;
-    } else if (ERC20Token != address(0) && IERC20(ERC20Token).balanceOf(address(this)) >= amount) {
-      upkeepNeeded = (block.timestamp - lastTimeStamp) > interval && counter < round;
-    } else {
-      upkeepNeeded = false;
-    }
+      
+    
+        upkeepNeeded = (block.timestamp - lastTimeStamp) > i_interval ;
+     
 
     // We don't use the checkData in this example. The checkData is defined when the Upkeep was registered.
   }
 
   function performUpkeep(bytes calldata /* performData */) external override {
+     uint256 upKeepID;
     //We highly recommend revalidating the upkeep in the performUpkeep function
-    if ((block.timestamp - lastTimeStamp) > interval) {
-      if (ERC20Token == address(0)) {
-        require(address(this).balance > amount, "ETH not enough");
-        payable(receiver).transfer(amount);
+    if( counter <i_round){
+      if (i_ERC20Token == address(0)) {
+       
+        require(getETHBalance() > i_amount, "ETH not enough");
+        payable(i_receiver).transfer(i_amount);
       } else {
-        require(IERC20(ERC20Token).balanceOf(address(this)) >= amount, "Not enough token");
-        IERC20(ERC20Token).transfer(receiver, amount);
+
+        require(getTokenBalance() >= i_amount, "Not enough token");
+        IERC20(i_ERC20Token).transfer(i_receiver, i_amount);
       }
-      ISmartPayrollFactory(factory).CreditMint(credit,sender,receiver);
+      i_factory.creditMint(i_credit,i_sender,i_receiver);
       lastTimeStamp = block.timestamp;
       counter = counter + 1;
-    }
-    // We don't use the performData in this example. The performData is generated by the Automation Node's call to your checkUpkeep function
+      // if(counter==i_round){
+      //   upKeepID = i_factory.getUpkeeperID(address(this));
+      // }
+      
+   
+    
+  }
   }
 
-  function getTokenBalance(address _checkAddress, IERC20 _token) external view returns (uint256 tokenAmount) {
-    if (_checkAddress == address(0)) revert IsZeroAddress();
-    tokenAmount = _token.balanceOf(_checkAddress);
+  function getTokenBalance() public view returns (uint256 tokenAmount) {
+    IERC20 token = IERC20(i_ERC20Token);
+    return(token.balanceOf(address(this)));
   }
 
-  function getETHBalance(address _checkAddress) external view returns (uint256 ethAmount) {
-    if (_checkAddress == address(0)) revert IsZeroAddress();
-    ethAmount = _checkAddress.balance;
+  function getETHBalance() public view returns (uint256 ethAmount) {
+    ethAmount = address(this).balance;
   }
 
   function contractDestruct() external {
    
-      if (ERC20Token == address(0)) {
+      if (i_ERC20Token == address(0)) {
         bool transferSuccess;
-        require(address(this).balance > amount, "ETH not enough");
-        (transferSuccess, ) = payable(DAOAddress).call{value: amount}("");
+        require(getETHBalance() > i_amount, "ETH not enough");
+        (transferSuccess, ) = payable(i_DAOAddress).call{value: i_amount}("");
         require(transferSuccess, "Token transfer to DAOAddress failed");
-        // require(address(this).balance > 0 , "ETH not enough");
-        (transferSuccess, ) = payable(sender).call{value: amount}("");
-        // require(transferSuccess, "ETH transfer to sender failed");
+        (transferSuccess, ) = payable(i_sender).call{value: i_amount}("");
+       
       } else {
-        IERC20 token = IERC20(ERC20Token);
-        require(token.balanceOf(address(this)) >= amount, "Not enough token");
-        bool transferSuccess =  token.transfer(DAOAddress, amount);
+        IERC20 token = IERC20(i_ERC20Token);
+        require(getTokenBalance() >= i_amount, "Not enough token");
+        bool transferSuccess =  token.transfer(i_DAOAddress, i_amount);
         require(transferSuccess, "Token transfer to DAOAddress failed");
-        // require(token.balanceOf(address(this)) > 0 , "erc20 token not enough");
-        transferSuccess =  token.transfer(sender, token.balanceOf(address(this)));
-        // require(transferSuccess, "erc20 token transfer to sender failed");
+     
+        transferSuccess =  token.transfer(i_sender, token.balanceOf(address(this)));
+ 
 
       }
 

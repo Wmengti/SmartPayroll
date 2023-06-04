@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract DAOVault is AccessControl{
-  address employer;
-  address employee;
-  address ERC20Token;
+  address immutable i_employer;
+  address immutable i_employee;
+  address immutable i_ERC20Token;
 
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
   event WithRrawFoundsEvent(bytes);
@@ -15,9 +15,9 @@ contract DAOVault is AccessControl{
 
   constructor(address _employer,address _employee,address _ERC20Address){
     _grantRole(ADMIN_ROLE, msg.sender);
-    employer = _employer;
-    employee = _employee;
-    ERC20Token =_ERC20Address;
+    i_employer = _employer;
+    i_employee = _employee;
+    i_ERC20Token = _ERC20Address;
   }
 
   function withdrawFunds(bytes memory response) external onlyRole(ADMIN_ROLE){
@@ -31,35 +31,44 @@ contract DAOVault is AccessControl{
         }
       }
       if (isEqual){
-        transfer(employer);
+        _transfer(i_employer);
       } else{
-        transfer(employee); 
+        _transfer(i_employee); 
       }
       
       
     }else{
-     transfer(employee);
+     _transfer(i_employee);
     }
     emit WithRrawFoundsEvent(response);
   }
 
-  function transfer(address _receiver) internal  {
+  function _transfer(address _receiver) internal  {
    
-    if(ERC20Token==address(0)){
+    if(i_ERC20Token==address(0)){
       bool Success;
-      uint256 ethBalance = address(this).balance;
+      uint256 ethBalance = getETHBalance();
       require(ethBalance>0,"ETH is not enough");
       (Success,) = payable(_receiver).call{value:ethBalance}("");
       require(Success, "ETH transfer to receiver failed");
       emit TransferEvent(_receiver,ethBalance);
     }else{
-      IERC20 token =IERC20(ERC20Token);
-      uint256 tokenBalance = token.balanceOf(address(this));
+      IERC20 token = IERC20(i_ERC20Token);
+      uint256 tokenBalance = getTokenBalance();
       require(tokenBalance>0,"erc20 token is not enough");
       require(token.transfer(_receiver,tokenBalance),"Token transfer to receiver failed");
 
     }
 
+  }
+
+    function getTokenBalance() public view returns (uint256 tokenAmount) {
+    IERC20 token = IERC20(i_ERC20Token);
+    return(token.balanceOf(address(this)));
+  }
+
+  function getETHBalance() public view returns (uint256 ethAmount) {
+    ethAmount = address(this).balance;
   }
 
    receive() external payable {}

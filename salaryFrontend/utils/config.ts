@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 14:47:02
+ * @LastEditTime: 2023-06-04 11:03:54
  * @Description: 
  */
 import { mainnet, polygon, sepolia, polygonMumbai } from 'wagmi/chains';
@@ -9,12 +9,12 @@ import { ethers } from 'ethers';
 export const ETH_CHAINS = [mainnet, polygon, sepolia, polygonMumbai];
 export const WALLET_CONNECT_PROJECT_ID = 'YOUR_WALLET_CONNECT_PROJECT_ID';
 
-export const SITE_NAME = 'boilr3';
+export const SITE_NAME = 'Smart Payroll';
 export const SITE_DESCRIPTION =
 	'The Ultimate Next.js dApp Boilerplate with RainbowKit, Tailwind CSS & WAGMI';
 export const SITE_URL = 'https://boilr3.vercel.app';
 
-export const SOCIAL_TWITTER = 'Envoy_1084';
+export const SOCIAL_TWITTER = 'pangmadee';
 export const SOCIAL_GITHUB = 'Envoy-VC/boilr3';
 
 export const NFT_CONTRACT_ADDRESS =

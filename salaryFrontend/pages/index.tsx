@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-29 19:46:16
+ * @LastEditTime: 2023-06-04 11:03:08
  * @Description:
  */
 import Image from 'next/image';
@@ -19,14 +19,14 @@ export default function Home() {
       ? window.location.origin
       : SITE_URL;
 
-  const links = [
-    {
-      title: 'Start',
-      description:
-        'Seamlessly integrate your decentralized application with Next.js, a popular React-based framework.',
-      href: '/CreateTask',
-    },
-  ];
+  // const links = [
+  //   {
+  //     title: 'Start',
+  //     description:
+  //       'Seamlessly integrate your decentralized application with Next.js, a popular React-based framework.',
+  //     href: '/CreateTask',
+  //   },
+  // ];
   return (
     <main
       className={`flex  min-h-[90vh]  items-center justify-around  p-10 ${inter.className}`}

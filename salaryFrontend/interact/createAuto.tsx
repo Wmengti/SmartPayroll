@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-01 15:31:13
+ * @LastEditTime: 2023-06-04 10:50:22
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -16,12 +16,12 @@ import smartPayrollFactoryABI from "@/constants/smartPayrollFactoryABI.json"
 import KeeperAutoSelfRegisterAddress from "@/constants/KeeperAutoSelfRegisterAddress.json"
 import functionsFactoryABI from "@/constants/functionsFactoryABI.json"
 import functionsFatoryAddress from "@/constants/functionsFactoryAddress.json"
+import { useAccount } from "wagmi"
 
 import {
   buildRequest,
-  // getDecodedResultLog,
 } from "@/FunctionsSandboxLibrary"
-import {simulateRequest} from "@/FunctionsSandboxLibrary/simulateRequest"
+
 interface RequestConfig {
   codeLocation: number;
   codeLanguage: number;
@@ -47,41 +47,53 @@ interface requestType {
 
 interface ParamsConfigType {
   DAOAddress: string,
-  FactoryAddress: string,
-  endTime:string,
+  factoryAddress: string,
+  endTime:number,
   proposalID:string,
+  contractName:string,
+  address:`0x${string}` | undefined,
 }
 
 export const createAuto = async (Params:ParamsConfigType)=>{
+  // connect address
+ 
 
-  const signer= configProvider().getSigner();
-  const provider= configProvider().getProvider();
+  // const signer= configProvider().getSigner();
+  const signer = () => {
+    if (typeof window !== "undefined") {
+      const { ethereum } = window as any
+      const provider = new ethers.providers.Web3Provider(ethereum)
+      const signer = provider.getSigner()
+      return signer
+    }
+  }
+  const currentSigner = signer();
   // contract factory
   const registryFactory = new ethers.Contract(
     networkConfig[NETWORK].functionsBillingRegistryProxy,
     functionsBillingRegistryProxyABI,
-    signer
+    currentSigner
   )
   
   const oracle = new ethers.Contract(
     networkConfig[NETWORK].functionsOracleProxy,
     functionsOracleProxyABI,
-    signer
+    currentSigner
   )
 
   const linkToken = new ethers.Contract(
     networkConfig[NETWORK].linkToken,
     linkTokenABI,
-    signer
+    currentSigner
   )
 
   const functionFactory = new ethers.Contract(
     functionsFatoryAddress[NETWORK],
     functionsFactoryABI,
-    signer
+    currentSigner
   )
   // isAuthorized because the test is not opened for all addresses
-  const isWalletAllowed = await oracle.isAuthorizedSender(signer.address)
+  const isWalletAllowed = await oracle.isAuthorizedSender(Params.address)
 
   if (!isWalletAllowed)
     return console.log(
@@ -93,7 +105,7 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   const subscriptionId = createSubscriptionReceipt.events[0].args["subscriptionId"].toNumber()
   console.log(`Subscription created with ID: ${subscriptionId}`)
   // check address for LINK balance
-  const linkBalance = await linkToken.balanceOf(signer.address)
+  const linkBalance = await linkToken.balanceOf(Params.address)
   console.log(linkBalance)
   const juelsAmount = ethers.utils.parseUnits('0.5')
   if (juelsAmount.gt(linkBalance)) {
@@ -113,16 +125,16 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   
   //deply functionFactory automation consumer
   console.log('create automation functions')
-  const timestamp = new Date(Params.endTime).getTime()
-  console.log(Params.endTime)
-  console.log(timestamp/1000)
+  // const timestamp = new Date(Params.endTime).getTime()
+  // console.log(Params.endTime)
+  // console.log(timestamp/1000)
   const deployTx = await functionFactory.createAutomatedFunctions(
     networkConfig[NETWORK].functionsOracleProxy,
     subscriptionId,
     200000,
-    timestamp/1000,
+    Params.endTime,
     Params.DAOAddress,
-    Params.FactoryAddress
+    Params.factoryAddress
   )
   // const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
   //   networkConfig[NETWORK].functionsOracleProxy,
@@ -149,7 +161,7 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   const functinConsumer = new ethers.Contract(
     functinConsumerAddress,
     functionAutoConsumerABI,
-    signer
+    currentSigner
   )
   
   const requestConfig:ExtendedRequestConfig = getRequestConfig([Params.proposalID]);
@@ -197,7 +209,7 @@ export const createAuto = async (Params:ParamsConfigType)=>{
 
   ////////////////////////////////////////////////////////////////
   const registrarParams = [
-    "testFunctions0601",
+    `${Params.contractName}_functions`,
     utils.formatBytes32String(""),
     functinConsumerAddress,
     "700000",
@@ -209,7 +221,7 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   const smartPayrollFactory = new ethers.Contract(
     smartPayrollFactoryAddress[NETWORK],
     smartPayrollFactoryABI,
-    signer
+    currentSigner
   )
   let tx = await smartPayrollFactory?.createKeeper(KeeperAutoSelfRegisterAddress[NETWORK], registrarParams)
 

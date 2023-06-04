@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-01 17:49:51
+ * @LastEditTime: 2023-06-04 11:00:41
  * @Description:
  */
 import {
@@ -50,6 +50,7 @@ const CardChakra = (props: any) => {
   const [isToggle, setIsToggle] = useState(true);
   const [contractBalance,setContractBalance]=useState();
   const [vaultBalance,setVaultBalance]=useState();
+  const [timestamp,setTimestamp]=useState<number>();
 
 
   console.log(props);
@@ -107,7 +108,7 @@ const CardChakra = (props: any) => {
     console.log(erc20Token)
     
     const balanceHandler = async ()=>{
-      let contractBalance = await erc20Token?.balanceOf(props.contract.contractAddress);
+      let contractBalance = await erc20Token?.balanceOf(props.contract.upkeeperContract);
       contractBalance =parseInt(utils.formatUnits(contractBalance,tokenSymbol[props.contract.token]))
       console.log('contractBalance:',contractBalance);
       setContractBalance(contractBalance)
@@ -162,9 +163,11 @@ const CardChakra = (props: any) => {
 
     const createParams = {
       DAOAddress: props.contract.DAOAddress,
-      FactoryAddress: smartPayrollFactoryAddress[NETWORK],
-      endTime: props.contract.endTime,
+      factoryAddress: smartPayrollFactoryAddress[NETWORK],
+      endTime: timestamp!,
       proposalID: props.contract.proposalID,
+      contractName: props.contract.contractName,
+      address
     };
 
     // await create(createParams);
@@ -187,7 +190,7 @@ const CardChakra = (props: any) => {
     const timestamp = new Date(dateString).getTime();
     console.log(dateString);
     console.log(timestamp / 1000);
-
+    setTimestamp(timestamp / 1000)
     taskParams.updateEndTime(dateString);
   };
 
