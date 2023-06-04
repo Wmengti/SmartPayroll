@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 16:13:37
+ * @LastEditTime: 2023-06-04 11:36:35
  * @Description:
  */
 import { useState } from 'react';
@@ -9,7 +9,6 @@ import Image from 'next/image';
 import {useRouter} from "next/router";
 
 
-import CreateRequest from '@/components/CreateMoment/CreateRequestButton';
 import CardChakra from '@/components/CreateMoment/CardChakra';
 export default function CheckMoment(props:any) {
   // const router = useRouter();

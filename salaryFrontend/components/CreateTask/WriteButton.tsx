@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-02 13:26:20
+ * @LastEditTime: 2023-06-04 11:35:31
  * @Description:
  */
 import { Button, Text } from '@chakra-ui/react';
@@ -11,7 +11,7 @@ import { useAccount } from 'wagmi';
 import smartPayrollFactoryAddress from '@/constants/smartPayrollFactoryAddress.json';
 import smartPayrollFactoryABI from '@/constants/smartPayrollFactoryABI.json';
 import { NETWORK,networkConfig } from '@/utils/config';
-import KeeperAutoSelfRegisterAddress from '@/constants/KeeperAutoSelfRegisterAddress.json';
+import KeeperAutoSelfRegisterAddress from '@/constants/keeperAutoSelfRegisterAddress.json';
 import smartPayrollByTimeABI from '@/constants/smartPayrollByTimeABI.json';
 import ERC20ABI from '@/constants/ERC20ABI.json';
 import { useRouter } from 'next/router';

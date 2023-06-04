@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 10:50:22
+ * @LastEditTime: 2023-06-04 11:35:50
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -13,7 +13,7 @@ import {configProvider} from '@/utils/config';
 import  getRequestConfig from '@/contracts/Functions-request-config';
 import smartPayrollFactoryAddress from "@/constants/smartPayrollFactoryAddress.json"
 import smartPayrollFactoryABI from "@/constants/smartPayrollFactoryABI.json"
-import KeeperAutoSelfRegisterAddress from "@/constants/KeeperAutoSelfRegisterAddress.json"
+import KeeperAutoSelfRegisterAddress from "@/constants/keeperAutoSelfRegisterAddress.json"
 import functionsFactoryABI from "@/constants/functionsFactoryABI.json"
 import functionsFatoryAddress from "@/constants/functionsFactoryAddress.json"
 import { useAccount } from "wagmi"

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 10:40:48
+ * @LastEditTime: 2023-06-04 11:31:25
  * @Description:
  */
 import { Button,Text } from "@chakra-ui/react"
@@ -11,7 +11,8 @@ import { useAccount } from "wagmi"
 import smartPayrollFactoryAddress from "@/constants/smartPayrollFactoryAddress.json"
 import smartPayrollFactoryABI from "@/constants/smartPayrollFactoryABI.json"
 import { NETWORK } from "@/utils/config"
-import KeeperAutoSelfRegisterAddress from "@/constants/KeeperAutoSelfRegisterAddress.json"
+import keeperAutoSelfRegisterAddress from "@/constants/keeperAutoSelfRegisterAddress.json"
+
 import smartPayrollByTimeABI from "@/constants/smartPayrollByTimeABI.json"
 import ERC20ABI from "@/constants/ERC20ABI.json"
 import { useRouter } from "next/router"
@@ -129,7 +130,7 @@ useEffect(()=>{
     console.log(registrarParams)
     taskParams.updateAdminAddress(address || "")
     try {
-      let tx = await smartPayrollFactory?.createKeeper(KeeperAutoSelfRegisterAddress[NETWORK], registrarParams)
+      let tx = await smartPayrollFactory?.createKeeper(keeperAutoSelfRegisterAddress[NETWORK], registrarParams)
 
       const receipt = await tx.wait(1)
       const upKeepId = BigInt(receipt.events[3].topics[1]).toString()
