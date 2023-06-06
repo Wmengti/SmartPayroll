@@ -10,13 +10,13 @@ import { useEffect } from "react"
 
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-05-31 10:28:41
+ * @LastEditTime: 2023-06-05 14:39:46
  * @Description:
  */
 export default function CreateTask() {
   const taskParams = useTaskContext();
 
-  console.log("what",taskParams.buttonType)
+  // console.log("what",taskParams.buttonType)
   useEffect(()=>{
     taskParams.updateButtonType('create')
   },[])

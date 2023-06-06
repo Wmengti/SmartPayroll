@@ -6,6 +6,7 @@ import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "./interface/ISmartPayrollFactory.sol";
+import "./interface/IDAOVault.sol";
 
 /**
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
@@ -39,6 +40,7 @@ contract AutomatedFunctions is FunctionsClient, ConfirmedOwner, AutomationCompat
 
   event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
   event RequestSentByTime(bytes32 indexed ,uint indexed,uint indexed);
+  event FillfullAction(bytes indexed,address indexed);
   constructor(
     address oracle,
     uint64 _subscriptionId,
@@ -109,9 +111,11 @@ contract AutomatedFunctions is FunctionsClient, ConfirmedOwner, AutomationCompat
     latestResponse = response;
     latestError = err;
     responseCounter = responseCounter + 1;
-    // IDAOVault(DAOAddress).withdrawFunds(latestResponse);
-    ISmartPayrollFactory(factoryAddress).withdrawDAOVault(latestResponse,DAOAddress);
     emit OCRResponse(requestId, response, err);
+    IDAOVault(DAOAddress).withdrawFunds(latestResponse);
+    // ISmartPayrollFactory(factoryAddress).withdrawDAOVault(latestResponse,DAOAddress);
+    emit FillfullAction(latestResponse,DAOAddress);
+    
   }
 
   function updateOracleAddress(address oracle) public onlyOwner {

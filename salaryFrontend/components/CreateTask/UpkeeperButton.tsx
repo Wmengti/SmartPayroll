@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 11:31:25
+ * @LastEditTime: 2023-06-05 22:10:55
  * @Description:
  */
 import { Button,Text } from "@chakra-ui/react"
@@ -19,6 +19,7 @@ import { useRouter } from "next/router"
 import { useTaskContext } from "@/contexts/taskProvider"
 import { tokenList } from "@/utils/tokenList"
 import {ContractModel} from "@/types/types"
+import { toast } from "react-toastify"
 // import {configProvider} from '@/utils/config';
 
 // interface ContractButtonProps {
@@ -87,7 +88,7 @@ export default function WriteButton() {
     timeUint: taskParams.timeUnitValue,
     timeInterval: taskParams.timeIntervalValue,
     round: taskParams.roundValue,
-    state: taskParams.state,
+    state: taskParams.contractState,
     proposal:taskParams.proposal ,
     proposalID:taskParams.proposalID,
     endTime:taskParams.endTime,
@@ -112,16 +113,17 @@ export default function WriteButton() {
     
 }
 useEffect(()=>{
-  if(taskParams.upKeepId!='' && taskParams.state!=''){
+  if(taskParams.upKeepId!='' && taskParams.contractState!=''){
     const actionFetch = async ()=>{
       await fetchHandler(uploaData)
+      console.log(uploaData)
     taskParams.updateButtonType('check')
     router.push(`/CheckMoment/${address}`)
     }
     actionFetch()
   }
 
-},[taskParams.upKeepId,taskParams.state])
+},[taskParams.upKeepId,taskParams.contractState])
 
   const createKeeperandle = async () => {
     setIsSecondLoad(true)
@@ -137,13 +139,19 @@ useEffect(()=>{
       console.log("upkeep============", typeof(upKeepId))
       console.log("upkeep", upKeepId)
       taskParams.updateUpKeepId(upKeepId)
-      taskParams.updateState('active')
+      taskParams.updateContractState('active')
 
      
 
       
     } catch (err) {
       console.log("create contract factory error:" + err)
+      toast("create contract factory error:" + err,
+        {
+          position: "top-center",
+          autoClose: 5000,
+        })
+      
     }
     setIsSecondLoad(false)
   }

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 11:00:41
+ * @LastEditTime: 2023-06-06 15:36:31
  * @Description:
  */
 import {
@@ -42,6 +42,7 @@ import automationRegistryABI from '@/constants/automationRegistryABI.json';
 import smartPayrollFactoryAddress from '@/constants/smartPayrollFactoryAddress.json';
 import ERC20ABI from '@/constants/ERC20ABI.json';
 import { tokenDic,tokenSymbol } from '@/utils/tokenList';
+import { toast } from 'react-toastify';
 
 const CardChakra = (props: any) => {
   const taskParams = useTaskContext();
@@ -51,6 +52,9 @@ const CardChakra = (props: any) => {
   const [contractBalance,setContractBalance]=useState();
   const [vaultBalance,setVaultBalance]=useState();
   const [timestamp,setTimestamp]=useState<number>();
+  const [isCancel,setIsCancel]=useState(false);
+  const [isLoad,setIsLoad]=useState(false);
+
 
 
   console.log(props);
@@ -103,13 +107,13 @@ const CardChakra = (props: any) => {
   }, []);
 
   useEffect(()=>{
-    console.log(props.contract.contractAddress)
-    console.log(props.contract.DAOAddress)
-    console.log(erc20Token)
+    console.log('up',props.contract.upkeeperContract)
+    // console.log(props.contract.DAOAddress)
+    // console.log(erc20Token)
     
     const balanceHandler = async ()=>{
       let contractBalance = await erc20Token?.balanceOf(props.contract.upkeeperContract);
-      contractBalance =parseInt(utils.formatUnits(contractBalance,tokenSymbol[props.contract.token]))
+      contractBalance =parseInt(utils.formatUnits(contractBalance,6))
       console.log('contractBalance:',contractBalance);
       setContractBalance(contractBalance)
       let vaultBalance = await erc20Token?.balanceOf(props.contract.DAOAddress);
@@ -123,16 +127,16 @@ const CardChakra = (props: any) => {
 
   const uploadData = {
     contractAddress: props.contract.contractAddress,
-    state: taskParams.state,
+    state: taskParams.contractState,
     proposal: taskParams.proposal,
     proposalID: taskParams.proposalID,
     endTime: taskParams.endTime,
   };
-  const fetchHandler = async (uploaData: any) => {
-    console.log(uploaData);
+  const fetchHandler = async (uploadData: any) => {
+    console.log('important...........',uploadData);
     const response = await fetch('/api/updateDB', {
       method: 'POST',
-      body: JSON.stringify(uploaData),
+      body: JSON.stringify(uploadData),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -142,44 +146,64 @@ const CardChakra = (props: any) => {
     console.log(res);
   };
   const saveHandler = async () => {
-    taskParams.updateState('cancel');
+    setIsLoad(true);
+    setIsCancel(true);
     await fetchHandler(uploadData);
+    
     onClose();
+    
     try {
       // const balance = await smartPayrollBytime!.getTokenBalance(props.contract.upkeeperContract,'0x81A9205F956A1D6ae81f51977Da9702A023e199a')
 
       // console.log("balance=========",balance);
+      toast("The contract has been locked.  transfer the remaining balance to the DAO vault. ",
+      {
+        position: 'top-center',
+        autoClose: 5000,
+      } )
       const desTx = await smartPayrollBytime!.contractDestruct();
       const receiptTx = await desTx.wait(1);
       console.log(receiptTx);
       console.log(props.contract.upKeepId);
+      toast("The automatic salary transfer has been canceled.",
+      {
+        position: 'top-center',
+        autoClose: 5000,
+      } )
       const Tx = await registry!.cancelUpkeep(props.contract.upKeepId);
       const receipt = await Tx.wait(1);
       console.log(receipt);
     } catch (err) {
       console.log(err);
     }
-    console.log(props.contract.DAOAddress);
+
 
     const createParams = {
       DAOAddress: props.contract.DAOAddress,
       factoryAddress: smartPayrollFactoryAddress[NETWORK],
       endTime: timestamp!,
-      proposalID: props.contract.proposalID,
+      proposalID:taskParams.proposalID!,
       contractName: props.contract.contractName,
       address
     };
-
+    console.log(createParams)
     // await create(createParams);
     await createAuto(createParams);
-
+    setIsLoad(false);
+    toast("The contract termination process has been completed.",
+      {
+        position: 'top-center',
+        autoClose: 5000,
+      } )
     console.log('done');
+    
   };
 
   const proposalHandler = (e: any) => {
     console.log(e.target.value);
     const proposal = e.target.value.toString();
     taskParams.updateProposal(proposal);
+    
 
     const proposalArray = proposal.split('/');
     taskParams.updateProposalID(proposalArray[proposalArray.length - 1]);
@@ -188,10 +212,18 @@ const CardChakra = (props: any) => {
   const endTimeHandler = (e: any) => {
     const dateString = e.target.value.toString();
     const timestamp = new Date(dateString).getTime();
-    console.log(dateString);
-    console.log(timestamp / 1000);
+    // console.log(dateString);
+    // console.log(timestamp / 1000);
     setTimestamp(timestamp / 1000)
     taskParams.updateEndTime(dateString);
+    
+    taskParams.updateContractState('cancel');
+
+   
+    
+    
+    
+   
   };
 
   const detailsHandler = () => {
@@ -227,7 +259,8 @@ const CardChakra = (props: any) => {
           <ButtonGroup spacing='2'>
             {props.contract.receiver != address && (
               <Button
-                // isDisabled={props.contract.state=='cancel'}
+              isLoading={isLoad}
+                isDisabled={props.contract.state=='cancel' || isCancel}
                 variant='solid'
                 colorScheme='blue'
                 onClick={termHandler}
@@ -295,10 +328,16 @@ const CardChakra = (props: any) => {
               <Stack spacing={2} px={4}>
               <Text fontSize='lg' as='b' >Contract Name</Text>
               <Text fontSize='lg' bg='gray.100'>{props.contract.contractName}</Text>
+              <Text fontSize='lg' as='b' >ProposalID</Text>
+              <Text fontSize='lg' bg='gray.100'>{props.contract.proposalID}</Text>
+              <Text fontSize='lg' as='b' >Contract Address</Text>
+              <Text fontSize='lg' bg='gray.100'>{props.contract.upkeeperContract}</Text>
               <Text fontSize='lg' as='b' >Employer Address</Text>
               <Text fontSize='lg' bg='gray.100'>{props.contract.admin}</Text>
               <Text fontSize='lg' as='b' >Employee Address</Text>
               <Text fontSize='lg' bg='gray.100'>{props.contract.receiver}</Text>
+              <Text fontSize='lg' as='b' >DAOVault Address</Text>
+              <Text fontSize='lg' bg='gray.100'>{props.contract.DAOAddress}</Text>
               <Text fontSize='lg' as='b' >Work Type</Text>
               <Text fontSize='lg' bg='gray.100'>{props.contract.workType}</Text>
               <Text fontSize='lg' as='b' >Salary</Text>
@@ -308,7 +347,7 @@ const CardChakra = (props: any) => {
               <Text fontSize='lg' as='b' >Sending Round</Text>
               <Text fontSize='lg' bg='gray.100'>{props.contract.round}</Text>
               <Text fontSize='lg' as='b' >Contract State</Text>
-              <Text fontSize='lg' bg='gray.100'>{props.contract.state || "active"}</Text>
+              <Text fontSize='lg' bg='gray.100'>{props.contract.state }</Text>
               {/* <Text fontSize='lg' as='b' >Vault Balance</Text>
               <Text fontSize='lg' bg='gray.100'>{props.contract.state}</Text> */}
               {/* <Text fontSize='lg' as='b' >Contract Balance</Text>

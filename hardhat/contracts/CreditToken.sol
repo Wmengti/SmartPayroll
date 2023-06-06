@@ -8,8 +8,10 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 
 contract CreditToken is ERC20, ERC20Snapshot, AccessControl, ERC20Permit {
+  address public minter;
   bytes32 public constant SNAPSHOT_ROLE = keccak256("SNAPSHOT_ROLE");
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+
 
   event Attest(address indexed to, uint256 indexed amount);
   event Revoke(address indexed to, uint256 indexed amount);
@@ -18,13 +20,15 @@ contract CreditToken is ERC20, ERC20Snapshot, AccessControl, ERC20Permit {
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _grantRole(SNAPSHOT_ROLE, msg.sender);
     _grantRole(MINTER_ROLE, _minter);
+    minter = _minter;
   }
 
   function snapshot() public onlyRole(SNAPSHOT_ROLE) {
     _snapshot();
   }
 
-  function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
+  function mint(address to, uint256 amount) public  {
+    // require(msg.sender==minter,"no access");
     _mint(to, amount);
   }
 

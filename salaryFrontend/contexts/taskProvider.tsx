@@ -23,7 +23,7 @@ export interface TaskCreateProviderValues {
   roundValue: number;
   intervalSeconds: number;
   upkeeperContract: string;
-  state: string;
+  contractState: string;
   proposal?: string;
   proposalID?: string;
   endTime?: string;
@@ -51,7 +51,7 @@ export interface TaskCreateProviderValues {
     timeIntervalValue: number
   ) => void;
   updateupkeeperContract: (upkeeperContract: string) => void;
-  updateState: (state: string) => void;
+  updateContractState: (contractState: string) => void;
   updateProposal: (proposal: string) => void;
   updateProposalID: (proposalId: string) => void;
   updateEndTime: (endTime: string) => void;
@@ -77,7 +77,7 @@ const defaultValues = {
   roundValue: 0,
   intervalSeconds: 0,
   upkeeperContract: '',
-  state: '',
+  contractState: '',
   proposal: '',
   proposalID: '',
   endTime: '',
@@ -100,7 +100,7 @@ const defaultValues = {
   updateRoundValue: () => null,
   updateIntervalSeconds: () => null,
   updateupkeeperContract: () => null,
-  updateState: () => null,
+  updateContractState: () => null,
   updateProposal: () => null,
   updateProposalID: () => null,
   updateEndTime: () => null,
@@ -140,7 +140,7 @@ export const TaskContextProvider = ({
   const [intervalSeconds, setIntervalSeconds] = useState(0);
   const [upkeeperContract, setUpkeeperContract] = useState('');
 
-  const [state, setState] = useState('');
+  const [contractState, setContractState] = useState('');
   const [proposal, setProposal] = useState('');
   const [proposalID, setProposalID] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -227,8 +227,8 @@ export const TaskContextProvider = ({
     setUpkeeperContract(upkeeperContract);
   };
 
-  const updateState = (state: string) => {
-    setState(state);
+  const updateContractState = (contractState: string) => {
+    setContractState(contractState);
   };
   const updateProposal = (proposal: string) => {
     setProposal(proposal);
@@ -268,7 +268,7 @@ export const TaskContextProvider = ({
         roundValue,
         intervalSeconds,
         upkeeperContract,
-        state,
+        contractState,
         proposal,
         proposalID,
         endTime,
@@ -291,7 +291,7 @@ export const TaskContextProvider = ({
         updateRoundValue,
         updateIntervalSeconds,
         updateupkeeperContract,
-        updateState,
+        updateContractState,
         updateProposal,
         updateProposalID,
         updateEndTime,

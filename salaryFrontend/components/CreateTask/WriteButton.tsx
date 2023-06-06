@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 11:35:31
+ * @LastEditTime: 2023-06-06 13:50:23
  * @Description:
  */
 import { Button, Text } from '@chakra-ui/react';
@@ -40,8 +40,8 @@ export default function WriteButton() {
   const taskParams = useTaskContext();
 
   const amount = ethers.utils.parseUnits(
-    taskParams.tokenAmount!.toString(),
-    tokenList[taskParams.tokenNumber!].Symbol
+    taskParams.tokenAmount?.toString()||"0",
+    tokenList[0].Symbol
   );
   const upContractParams = [
     taskParams.intervalSeconds,
@@ -66,11 +66,11 @@ export default function WriteButton() {
   const smartPayrollFactory = useMemo(() => {
     const currentSigner = signer();
     if (typeof window !== 'undefined') {
-      const smartPayrollFactory = new ethers.Contract(
-        smartPayrollFactoryAddress[NETWORK],
-        smartPayrollFactoryABI,
-        currentSigner
-      );
+        const smartPayrollFactory = new ethers.Contract(
+          smartPayrollFactoryAddress[NETWORK],
+          smartPayrollFactoryABI,
+          currentSigner
+        );
       return smartPayrollFactory;
     }
   }, []);
@@ -137,9 +137,9 @@ export default function WriteButton() {
     const currentSigner = signer();
     const transferAmount = ethers.utils.parseUnits(
       (taskParams.tokenAmount! * taskParams.roundValue!).toString(),
-      tokenList[taskParams.tokenNumber!].Symbol
+      tokenList[0].Symbol
     );
-    console.log(erc20Token);
+    console.log(transferAmount);
     console.log(address);
     try {
       if (
@@ -167,6 +167,7 @@ export default function WriteButton() {
       setFirstIsLoad(false);
       taskParams.updateButtonType('upkeeper');
       setTrigger('');
+      console.log('send done!')
     } catch (e) {
       console.log(e);
     }

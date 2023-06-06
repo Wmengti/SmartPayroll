@@ -15,9 +15,13 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+
 import CreateButton from '@/components/CreateTask/CreateButton';
 import { useTaskContext } from '@/contexts/taskProvider';
+import { v4 as uuidv4 } from 'uuid';
+
+import { useAccount } from 'wagmi';
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-20 11:21:32
@@ -28,6 +32,9 @@ export default function CreateContract() {
   const taskParams = useTaskContext();
   const [EmailIsError, setEmailIsError] = useState(false);
   const [addressError, setAddressError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [isDisabled,setDisabled] = useState(true);
+  const {address} = useAccount();
 
   const emailInputHandler = (e: any) => {
     const reEmail =
@@ -35,10 +42,11 @@ export default function CreateContract() {
     taskParams.updateEmailAddress(e.target.value);
     if (e.target.value && reEmail.test(e.target.value)) {
       setEmailIsError(false);
+
     } else {
       setEmailIsError(true);
+  
     }
-    console.log(e.target.value);
   };
 
   const contractSubmitHander = (e: any) => {
@@ -47,17 +55,23 @@ export default function CreateContract() {
   };
   const addressInputHandler = (e: any) => {
     taskParams.updateReceiver(e.target.value);
-    if (e.target.value.length == 42) {
+    if (e.target.value.length == 42 ) {
       setAddressError(false);
     } else {
       setAddressError(true);
     }
-    console.log(e.target.value);
+
   };
 
   const nameInputHandler = (e: any) => {
+  
+    if (e.target.value=='' ) {
+      setNameError(true);
+    } else {
+      setNameError(false);
+    }
+
     taskParams.updateContractName(e.target.value);
-    console.log(e.target.value);
   };
   const workHandler = (e: any) => {
     taskParams.updateWorkType(e);
@@ -66,8 +80,64 @@ export default function CreateContract() {
 
   const decriptionHandler = (e: any) => {
     taskParams.updateDescription(e.target.value);
-    console.log(e.target.value);
+  
   };
+
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+
+  const handleImageSelectButtonClick = () => {
+    hiddenFileInput.current?.click();
+  };
+
+  useEffect(()=>{
+    if(EmailIsError|| addressError || nameError){
+      setDisabled(true);
+ 
+    }else{
+      setDisabled(false);
+    }
+  },[EmailIsError , addressError , nameError])
+
+
+  // const  uploadImageToS3 = async (file: File, dir: string)=>{
+  //     const fileType = encodeURIComponent(file.type)
+  //     const targetFilePath = `${dir}/${uuidv4()}`
+
+  //     const res = await fetch(
+  //         `/api/image-upload?file=${targetFilePath}&fileType=${fileType}`
+  //     )
+  //     const {url, fields} = await res.json()
+  //     const formData = new FormData()
+  //     Object.entries({...fields, file}).forEach(([key, value]) => {
+  //         formData.append(key, value as string)
+  //     })
+
+  //     const upload = await fetch(url, {
+  //         method: 'POST',
+  //         body: formData,
+  //     })
+
+  //     if (upload && upload.ok) {
+  //         console.log('Upload success')
+  //         return targetFilePath
+  //     } else {
+  //         console.log('Upload failed')
+  //         return ''
+  //     }
+  // }
+  //   const updateImage = async (name: string, image: File) => {
+
+  //     const path = await uploadImageToS3(image, name);
+
+  //   };
+  //   const imageChangeHandler = async (e:any) => {
+  //     let image = e.target.files[0];
+  //     if (!image) {
+  //       console.log('There is no image');
+  //       return;
+  //     }
+  //     await updateImage(image.name, image);
+  //   };
 
   return (
     <>
@@ -83,7 +153,7 @@ export default function CreateContract() {
         p='10'
       >
         <form className='flex flex-col gap-5' onSubmit={contractSubmitHander}>
-          <FormControl isRequired>
+          <FormControl isRequired isInvalid={nameError}>
             <FormLabel>Contract Name</FormLabel>
             <Input
               type='name'
@@ -92,6 +162,16 @@ export default function CreateContract() {
               onChange={nameInputHandler}
               value={taskParams.contractName}
             />
+            {nameError ? (
+              <FormErrorMessage>
+                Please provide a concise and meaningful suggestion for the
+                contract name
+              </FormErrorMessage>
+            ) : (
+              <FormHelperText></FormHelperText>
+            )}
+            
+          
           </FormControl>
           <FormControl isRequired isInvalid={EmailIsError}>
             <FormLabel>Email Address</FormLabel>
@@ -156,17 +236,29 @@ export default function CreateContract() {
             />
           </FormControl>
           <ButtonGroup size='sm' isAttached variant='outline'>
-            <Button bg='gray.300'>
-              Upload Contract Content by Taking a Photo(Optional)
-            </Button>
+            <label htmlFor='file-upload' className='upload-button'>
+              <Button bg='gray.300' onClick={handleImageSelectButtonClick}>
+                Upload Contract Content by Taking a Photo(Optional)
+              </Button>
+
+              <input
+                id='file-upload'
+                type='file'
+                className='hidden'
+                accept='image/png, image/jpeg, image/jpg'
+                ref={hiddenFileInput}
+                // onChange={imageChangeHandler}
+              />
+            </label>
             <IconButton
               bg='white'
-              aria-label='Add to friends'
+              aria-label='file-upload'
               icon={<AddIcon />}
+              onClick={handleImageSelectButtonClick}
             />
           </ButtonGroup>
 
-          <CreateButton />
+          <CreateButton isDisabled={isDisabled}/>
         </form>
       </Box>
     </>

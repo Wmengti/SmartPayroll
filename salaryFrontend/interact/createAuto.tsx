@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 11:35:50
+ * @LastEditTime: 2023-06-06 15:36:47
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -17,6 +17,7 @@ import KeeperAutoSelfRegisterAddress from "@/constants/keeperAutoSelfRegisterAdd
 import functionsFactoryABI from "@/constants/functionsFactoryABI.json"
 import functionsFatoryAddress from "@/constants/functionsFactoryAddress.json"
 import { useAccount } from "wagmi"
+import { toast } from 'react-toastify';
 
 import {
   buildRequest,
@@ -58,39 +59,39 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   // connect address
  
 
-  // const signer= configProvider().getSigner();
-  const signer = () => {
-    if (typeof window !== "undefined") {
-      const { ethereum } = window as any
-      const provider = new ethers.providers.Web3Provider(ethereum)
-      const signer = provider.getSigner()
-      return signer
-    }
-  }
-  const currentSigner = signer();
+  const signer= configProvider().getSigner();
+  // const signer = () => {
+  //   if (typeof window !== "undefined") {
+  //     const { ethereum } = window as any
+  //     const provider = new ethers.providers.Web3Provider(ethereum)
+  //     const signer = provider.getSigner()
+  //     return signer
+  //   }
+  // }
+  // const currentSigner = signer();
   // contract factory
   const registryFactory = new ethers.Contract(
     networkConfig[NETWORK].functionsBillingRegistryProxy,
     functionsBillingRegistryProxyABI,
-    currentSigner
+    signer
   )
   
   const oracle = new ethers.Contract(
     networkConfig[NETWORK].functionsOracleProxy,
     functionsOracleProxyABI,
-    currentSigner
+    signer
   )
 
   const linkToken = new ethers.Contract(
     networkConfig[NETWORK].linkToken,
     linkTokenABI,
-    currentSigner
+    signer
   )
 
   const functionFactory = new ethers.Contract(
     functionsFatoryAddress[NETWORK],
     functionsFactoryABI,
-    currentSigner
+    signer
   )
   // isAuthorized because the test is not opened for all addresses
   const isWalletAllowed = await oracle.isAuthorizedSender(Params.address)
@@ -100,20 +101,44 @@ export const createAuto = async (Params:ParamsConfigType)=>{
       "\nChainlink Functions is currently in a closed testing phase.\nFor access sign up here:\nhttps://functions.chain.link"
     )
   console.log("Creating Functions billing subscription")
+  toast("Creating Functions billing subscription",
+      {
+        position: 'top-center',
+        autoClose: 5000,
+      } )
   const createSubscriptionTx = await registryFactory.createSubscription()
   const createSubscriptionReceipt = await createSubscriptionTx.wait(2)
   const subscriptionId = createSubscriptionReceipt.events[0].args["subscriptionId"].toNumber()
   console.log(`Subscription created with ID: ${subscriptionId}`)
+  toast(`Subscription created with ID: ${subscriptionId}`,
+      {
+        position: 'top-center',
+        autoClose: 5000,
+      } )
+  
   // check address for LINK balance
   const linkBalance = await linkToken.balanceOf(Params.address)
   console.log(linkBalance)
+  toast(`link balance: ${linkBalance}`,
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
   const juelsAmount = ethers.utils.parseUnits('0.5')
   if (juelsAmount.gt(linkBalance)) {
+    toast(`Insufficent LINK balance. Trying to fund subscription with ${ethers.utils.formatEther(
+      juelsAmount
+    )} LINK, but only have ${ethers.utils.formatEther(linkBalance)}.`,
+    {
+      position: 'top-center',
+      autoClose: 5000,
+    } );
     throw Error(
       `Insufficent LINK balance. Trying to fund subscription with ${ethers.utils.formatEther(
         juelsAmount
       )} LINK, but only have ${ethers.utils.formatEther(linkBalance)}.`
     )
+
   }
   const fundTx = await linkToken.transferAndCall(
     networkConfig[NETWORK].functionsBillingRegistryProxy,
@@ -122,9 +147,18 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   )
   await fundTx.wait(2);
   console.log(`Subscription ${subscriptionId} funded with ${ethers.utils.formatEther(juelsAmount)} LINK`)
-  
+  toast(`Subscription ${subscriptionId} funded with ${ethers.utils.formatEther(juelsAmount)} LINK`,
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
   //deply functionFactory automation consumer
   console.log('create automation functions')
+  toast('create automation functions',
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
   // const timestamp = new Date(Params.endTime).getTime()
   // console.log(Params.endTime)
   // console.log(timestamp/1000)
@@ -151,6 +185,11 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   console.log(deployReceipt.events[0])
   console.log(deployReceipt.events[0].args[0])
   const functinConsumerAddress = deployReceipt.events[0].args[0]
+  toast(`automation functions address: ${functinConsumerAddress}`,
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
 
   //addconsumer to subscriotion id
   const addTx = await registryFactory.addConsumer(subscriptionId, functinConsumerAddress)
@@ -161,9 +200,22 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   const functinConsumer = new ethers.Contract(
     functinConsumerAddress,
     functionAutoConsumerABI,
-    currentSigner
+    signer
   )
-  
+  console.log(Params.proposalID);
+  if(Params.proposalID==''){
+    toast('proposalID is null',
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
+  }else{
+    toast(`proposalID is ${Params.proposalID}`,
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
+  }
   const requestConfig:ExtendedRequestConfig = getRequestConfig([Params.proposalID]);
   console.log(requestConfig) 
   const DONPublicKey = await oracle.getDONPublicKey();
@@ -192,6 +244,11 @@ export const createAuto = async (Params:ParamsConfigType)=>{
  
   // functinConsumer
   console.log('start generate request')
+  toast('start generate request',
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
   const functionsRequestBytes = await functinConsumer.generateRequest(
     request.source,
     request.secrets ?? [],
@@ -206,7 +263,11 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   console.log(setRequestTx)
   
 
-
+  toast('send to automation ',
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
   ////////////////////////////////////////////////////////////////
   const registrarParams = [
     `${Params.contractName}_functions`,
@@ -221,7 +282,7 @@ export const createAuto = async (Params:ParamsConfigType)=>{
   const smartPayrollFactory = new ethers.Contract(
     smartPayrollFactoryAddress[NETWORK],
     smartPayrollFactoryABI,
-    currentSigner
+    signer
   )
   let tx = await smartPayrollFactory?.createKeeper(KeeperAutoSelfRegisterAddress[NETWORK], registrarParams)
 
@@ -229,6 +290,11 @@ export const createAuto = async (Params:ParamsConfigType)=>{
 
   const upKeepId = BigInt(receipt.events[3].topics[1]).toString()
   console.log("upkeep", upKeepId)
+  toast('functions automatically updated,upKeepId: ' + upKeepId,
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
   ////////////////////////////////////////////////////////////////
 
    

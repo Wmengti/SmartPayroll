@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 11:35:40
+ * @LastEditTime: 2023-06-06 15:36:21
  * @Description: 
  */
 import { utils,ethers} from "ethers"
@@ -16,6 +16,7 @@ import smartPayrollFactoryABI from "@/constants/smartPayrollFactoryABI.json"
 import KeeperAutoSelfRegisterAddress from "@/constants/keeperAutoSelfRegisterAddress.json"
 import functionsFactoryABI from "@/constants/functionsFactoryABI.json"
 import functionsFatoryAddress from "@/constants/functionsFactoryAddress.json"
+import { toast } from 'react-toastify';
 
 import {
   buildRequest,
@@ -46,11 +47,14 @@ interface requestType {
 }
 interface ParamsConfigType {
   DAOAddress: string,
-  FactoryAddress: string,
-  endDate:string
+  factoryAddress: string,
+  endTime:number,
+  proposalID:string,
+  contractName:string,
+  address:`0x${string}` | undefined,
 }
 export const create = async (Params:ParamsConfigType)=>{
-
+ 
   const signer= configProvider().getSigner();
   const provider= configProvider().getProvider();
   // contract factory
@@ -110,14 +114,14 @@ export const create = async (Params:ParamsConfigType)=>{
   
   //deply functionFactory automation consumer
   console.log('create automation functions')
-  const timestamp = new Date(Params.endDate).getTime()
+  
   const deployTx = await functionFactory.createAutomatedFunctions(
     networkConfig[NETWORK].functionsOracleProxy,
     subscriptionId,
     200000,
-    timestamp,
+    Params.endTime,
     Params.DAOAddress,
-    Params.FactoryAddress
+    Params.factoryAddress
   )
   // const deployTx = await functionFactory.createAutomatedFunctionsConsumer(
   //   networkConfig[NETWORK].functionsOracleProxy,
@@ -146,8 +150,22 @@ export const create = async (Params:ParamsConfigType)=>{
     functionAutoConsumerABI,
     signer
   )
-  
-  const requestConfig:ExtendedRequestConfig = getRequestConfig(['0xab619164329aea8c44dcf8ca3dab3cfc5a31afa7450eb151210d6a651a1a5e18']);
+  if(Params.proposalID==''){
+    toast('proposalID is null',
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
+  throw Error('proposalID is not exist')
+  }else{
+    toast(`proposalID is ${Params.proposalID}`,
+  {
+    position: 'top-center',
+    autoClose: 5000,
+  } )
+  }
+ 
+  const requestConfig:ExtendedRequestConfig = getRequestConfig([Params.proposalID]);
   console.log(requestConfig) 
   const DONPublicKey = await oracle.getDONPublicKey();
   // Remove the preceding 0x from the DON public key
@@ -270,13 +288,13 @@ export const create = async (Params:ParamsConfigType)=>{
     )
 
     // If a response is not received in time, the request has exceeded the Service Level Agreement
-    setTimeout(async () => {
-      console.log(
-        "A response has not been received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request."
-      )
+    // setTimeout(async () => {
+    //   console.log(
+    //     "A response has not been received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request."
+    //   )
      
-      reject()
-    }, 300_000) // TODO: use registry timeout seconds
+    //   reject()
+    // }, 300_000) // TODO: use registry timeout seconds
   })
 
 

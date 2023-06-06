@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-04 11:36:35
+ * @LastEditTime: 2023-06-05 21:22:17
  * @Description:
  */
 import { useState } from 'react';
@@ -72,7 +72,7 @@ export async function getServerSideProps(context:any) {
         timeUint:contract.timeUint,
         timeInterval:contract.timeInterval,
         round:contract.round,
-        state:contract.state,
+        state:contract.state||'',
         proposal:contract.proposal, 
         proposalID:contract.proposalID, 
         endTime:contract.endTime,

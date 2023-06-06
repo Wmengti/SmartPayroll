@@ -8,6 +8,7 @@ contract DAOVault is AccessControl{
   address immutable i_employer;
   address immutable i_employee;
   address immutable i_ERC20Token;
+  address public admin;
 
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
   event WithRrawFoundsEvent(bytes);
@@ -15,13 +16,17 @@ contract DAOVault is AccessControl{
 
   constructor(address _employer,address _employee,address _ERC20Address){
     _grantRole(ADMIN_ROLE, msg.sender);
+
     i_employer = _employer;
     i_employee = _employee;
     i_ERC20Token = _ERC20Address;
+    admin = msg.sender;
   }
 
-  function withdrawFunds(bytes memory response) external onlyRole(ADMIN_ROLE){
+  function withdrawFunds(bytes memory response) external {
+    // require(msg.sender ==admin,"no access");
     bytes memory res = hex"466f72";
+    // require(response.length>0,"response is error");
     if(response.length==res.length){
       bool isEqual = true;
       for(uint i = 0; i < response.length; i++){
