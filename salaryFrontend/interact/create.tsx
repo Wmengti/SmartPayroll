@@ -1,13 +1,14 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-06 15:36:21
+ * @LastEditTime: 2023-06-06 16:20:00
  * @Description: 
  */
 import { utils,ethers} from "ethers"
 import {networkConfig,NETWORK,VERIFICATION_BLOCK_CONFIRMATIONS} from "@/utils/config"
 import functionsBillingRegistryProxyABI from "@/constants/FunctionsBillingRegistryABI.json"
 import functionsOracleProxyABI from "@/constants/functionsOracleProxyABI.json"
-import linkTokenABI from "@/constants/linkTokenABI.json"
+import linkTokenABI from "@/constants/linktokenABI.json"
+
 import functionAutoConsumerABI from "@/constants/functionAutoConsumerABI.json"
 import {configProvider} from '@/utils/config';
 import  getRequestConfig from '@/contracts/Functions-request-config';
