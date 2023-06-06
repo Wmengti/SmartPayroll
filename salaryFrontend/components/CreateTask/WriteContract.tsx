@@ -16,7 +16,7 @@ import { tokenList } from '@/utils/tokenList';
 import { useTaskContext } from '@/contexts/taskProvider';
 import WriteButton from '@/components/CreateTask/WriteButton';
 import { useEffect } from 'react';
-import FaucetButton from '@/components/CreateTask/FaucetButton.tsx';
+import FaucetButton from '@/components/CreateTask/FaucetButton';
 
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
