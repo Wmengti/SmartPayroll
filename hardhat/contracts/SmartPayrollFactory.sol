@@ -4,29 +4,23 @@ pragma solidity ^0.8.7;
 import "./SmartPayrollByTime.sol";
 import "./DAOVault.sol";
 import "./interface/ICreditToken.sol";
+import "./interface/IKeeperAutoSelfRegister.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-struct RegistrationParams {
-  string name;
-  bytes encryptedEmail;
-  address upkeepContract;
-  uint32 gasLimit;
-  address adminAddress;
-  bytes checkData;
-  bytes offchainConfig;
-  uint96 amount;
-}
 
-interface IKeeperAutoSelfRegister {
-  function registerAndPredictID(RegistrationParams memory params) external returns (uint256);
-}
+
+import {Registration} from "./library/Registration.sol";
+import {UpkeeperContract} from "./library/UpkeeperContract.sol";
+
+
+
 
 contract SmartPayrollFactory is AccessControl {
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
   mapping(address => uint256) public upkeepContractToID;
 
-  event UpkeepContractCreateAddress(address, SmartPayrollByTime.contractParams);
-  event UpKeeperCreate(uint256, RegistrationParams);
+  event UpkeepContractCreateAddress(address, UpkeeperContract.contractParams);
+  event UpKeeperCreate(uint256, Registration.RegistrationParams);
   event DAOVaultCreate(address, address, address);
 
   constructor() {
@@ -37,7 +31,7 @@ contract SmartPayrollFactory is AccessControl {
    * @description: create new contract DAOVault adn smart payroll contract
    * @return {*}
    */
-  function createUpkeepContract(SmartPayrollByTime.contractParams memory _upkeepContractParams) external {
+  function createUpkeepContract(UpkeeperContract.contractParams memory _upkeepContractParams) external {
     DAOVault daoVault = new DAOVault(
       _upkeepContractParams._sender,
       _upkeepContractParams._receiver,
@@ -55,7 +49,7 @@ contract SmartPayrollFactory is AccessControl {
    * @description: it can execute the upkeeper register
    * @return {*}
    */
-  function createKeeper(address _keeperRegistar, RegistrationParams memory _registarParams) external {
+  function createKeeper(address _keeperRegistar, Registration.RegistrationParams memory _registarParams) external {
     require(_keeperRegistar != address(0), "Not Registar");
 
     IKeeperAutoSelfRegister regustrar = IKeeperAutoSelfRegister(_keeperRegistar);

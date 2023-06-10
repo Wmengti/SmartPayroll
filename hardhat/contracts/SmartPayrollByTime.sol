@@ -12,6 +12,11 @@ import "./interface/ISmartPayrollFactory.sol";
 import "./interface/ICreditToken.sol";
 
 
+import {UpkeeperContract} from "./library/UpkeeperContract.sol"; 
+  
+
+
+
 // interface ISmartPayrollFactory {
 //   function creditMint(address _creditAddress,address _employer,address _employee) external;
 //   function getUpkeeperID(address _upkeepContract) external returns(uint256);
@@ -37,22 +42,13 @@ contract SmartPayrollByTime is AutomationCompatible {
 
 
 
-  struct contractParams {
-    uint updateInterval;
-    address _erc20Address;
-    address _sender;
-    address _receiver;
-    uint256 _round;
-    uint256 _amount;
-    address _credit;
-  }
 
   event AutomationTransfer(address indexed, address indexed, uint256 indexed);
   event WithdrawTransfer(address indexed, address indexed, uint256 indexed);
 
   event Mint( address indexed, uint256 indexed);
 
-  constructor(contractParams memory _contractParams,  address _DAOAddress) {
+  constructor(UpkeeperContract.contractParams memory _contractParams,  address _DAOAddress) {
     i_interval = _contractParams.updateInterval;
     i_ERC20Token = _contractParams._erc20Address;
     i_amount = _contractParams._amount;
