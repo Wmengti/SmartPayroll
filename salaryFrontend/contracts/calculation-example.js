@@ -1,14 +1,13 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-26 19:56:33
- * @Description: 
+ * @Description:
  */
 // This example shows how to calculate a continuously compounding interested rate.
 // This calculation would require significant on-chain gas, but is easy for a decentralized oracle network.
 
 // Arguments can be provided when a request is initated on-chain and used in the request source code as shown below
-const source = 
-`
+const source = `
 const principalAmount = parseInt(args[0])
 const APYTimes100 = parseInt(args[1])
 const APYAsDecimalPercentage = APYTimes100 / 100 / 100
@@ -26,6 +25,6 @@ const totalAmountAfterInterest = principalAmount * eulersNumber ** (APYAsDecimal
 // - Functions.encodeString
 // Or return a custom Buffer for a custom byte encoding
 return Functions.encodeUint256(Math.round(totalAmountAfterInterest))
-`
+`;
 
 module.exports = source;

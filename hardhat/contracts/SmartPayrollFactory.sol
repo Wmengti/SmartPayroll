@@ -1,27 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "./SmartPayrollByTime.sol";
-import "./DAOVault.sol";
-import "./interface/ICreditToken.sol";
-import "./interface/IKeeperAutoSelfRegister.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-
-
+import {SmartPayrollByTime} from "./SmartPayrollByTime.sol";
+import {DAOVault} from "./DAOVault.sol";
+import {ICreditToken} from "./interface/ICreditToken.sol";
+import {IKeeperAutoSelfRegister} from "./interface/IKeeperAutoSelfRegister.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 import {Registration} from "./library/Registration.sol";
 import {UpkeeperContract} from "./library/UpkeeperContract.sol";
 
-
-
-
 contract SmartPayrollFactory is AccessControl {
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-  mapping(address => uint256) public upkeepContractToID;
 
-  event UpkeepContractCreateAddress(address, UpkeeperContract.contractParams);
-  event UpKeeperCreate(uint256, Registration.RegistrationParams);
-  event DAOVaultCreate(address, address, address);
+  mapping(address => uint256) public upkeepContractToID;
+  mapping(address => address) public UpkeepAddressToDAO;
+
+  event UpkeepContractCreateAddress(address smartPayrollByTime, UpkeeperContract.contractParams contractParams);
+  event UpKeeperCreate(uint256 keeperID, Registration.RegistrationParams registarParams);
+  event DAOVaultCreate(address daoVault, address sender, address receiver);
 
   constructor() {
     _grantRole(ADMIN_ROLE, msg.sender);
@@ -35,14 +32,13 @@ contract SmartPayrollFactory is AccessControl {
     DAOVault daoVault = new DAOVault(
       _upkeepContractParams._sender,
       _upkeepContractParams._receiver,
-      _upkeepContractParams._erc20Address
+      _upkeepContractParams._erc20Address,
+      _upkeepContractParams._FunctionsFactory
     );
     emit DAOVaultCreate(address(daoVault), _upkeepContractParams._sender, _upkeepContractParams._receiver);
-    SmartPayrollByTime smartPayrollByTime = new SmartPayrollByTime(
-      _upkeepContractParams,
-      address(daoVault)
-    );
+    SmartPayrollByTime smartPayrollByTime = new SmartPayrollByTime(_upkeepContractParams, address(daoVault));
     emit UpkeepContractCreateAddress(address(smartPayrollByTime), _upkeepContractParams);
+    UpkeepAddressToDAO[address(smartPayrollByTime)] = address(daoVault);
   }
 
   /*
@@ -58,13 +54,22 @@ contract SmartPayrollFactory is AccessControl {
     emit UpKeeperCreate(keeperID, _registarParams);
   }
 
-   /*
+  /*
    * @description: get upkeeperID by SmartPayrollByTime
    * @param {address} _upkeepContract
    * @return {*}
    */
-  function getUpkeeperID(address _upkeepContract) public returns (uint256 upkeepID) {
+  function getUpkeeperID(address _upkeepContract) public view returns (uint256 upkeepID) {
     return upkeepContractToID[_upkeepContract];
+  }
+
+  /*
+   * @description: get DAOAddress by SmartPayrollByTime
+   * @param {address} _upkeepContract
+   * @return {*}
+   */
+  function getDAOAddress(address _upkeepContract) public view returns (address DAOAddress) {
+    return UpkeepAddressToDAO[_upkeepContract];
   }
 
   /*
@@ -89,6 +94,4 @@ contract SmartPayrollFactory is AccessControl {
   // function withdrawDAOVault(bytes memory response, address payable _DAOAddress) external {
   //   DAOVault(_DAOAddress).withdrawFunds(response);
   // }
-
- 
 }

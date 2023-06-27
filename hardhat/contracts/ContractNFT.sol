@@ -1,22 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
-
+import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
   using Counters for Counters.Counter;
   using Strings for uint256;
   Counters.Counter private _tokenIdCounter;
   uint256 private immutable i_time;
-  string private  contractName;
+  string private contractName;
 
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+
+  error IsZeroAddress();
 
   // event list
   event SafeMint(address to, uint256 tokenId);
@@ -29,9 +30,8 @@ contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
     _grantRole(ADMIN_ROLE, msg.sender);
   }
 
- 
-
   function safeMint(address to) external onlyRole(ADMIN_ROLE) {
+    if (address(0) == to) revert IsZeroAddress();
     uint256 tokenId = _tokenIdCounter.current();
     _tokenIdCounter.increment();
     _safeMint(to, tokenId);
@@ -39,7 +39,7 @@ contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
     emit SafeMint(to, tokenId);
   }
 
-  function _generateImage(uint256 tokenId) internal returns (string memory) {
+  function _generateImage() internal view returns (string memory) {
     bytes memory svg = abi.encodePacked(
       '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
       "<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>",
@@ -56,7 +56,7 @@ contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
     return string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(svg)));
   }
 
-   function _getTokenURI(uint256 tokenId) internal returns (string memory) {
+  function _getTokenURI(uint256 tokenId) internal view returns (string memory) {
     bytes memory dataURI = abi.encodePacked(
       "{",
       '"name": "smart payroll contract #',
@@ -64,12 +64,13 @@ contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
       '",',
       '"description": "smart payroll on chain",',
       '"image": "',
-      _generateImage(tokenId),
+      _generateImage(),
       '"',
       "}"
     );
     return string(abi.encodePacked("data:application/json;base64,", Base64.encode(dataURI)));
   }
+
   // function burn(uint256 tokenId) external  {
   //   _burn(tokenId);
   //   emit burn(tokenId);
@@ -99,8 +100,8 @@ contract ContractNFT is ERC721, ERC721URIStorage, AccessControl {
     uint256 batchSize
   ) internal virtual override {
     if (from == address(0)) {
-      emit Attest(to, firstTokenId);
-    } else if (from == address(0)) {
+      emit Attest(from, firstTokenId);
+    } else if (to == address(0)) {
       emit Revoke(to, firstTokenId);
     }
   }

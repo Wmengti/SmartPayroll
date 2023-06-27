@@ -4,24 +4,18 @@ pragma solidity ^0.8.7;
 // AutomationCompatible.sol imports the functions from both ./AutomationBase.sol and
 // ./interfaces/AutomationCompatibleInterface.sol
 
-import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "hardhat/console.sol";
-import "./interface/ISmartPayrollFactory.sol";
-import "./interface/ICreditToken.sol";
+import {AutomationCompatible} from "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {ISmartPayrollFactory} from "./interface/ISmartPayrollFactory.sol";
+import {ICreditToken} from "./interface/ICreditToken.sol";
 
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {UpkeeperContract} from "./library/UpkeeperContract.sol"; 
-  
+import {UpkeeperContract} from "./library/UpkeeperContract.sol";
 
-
-
-// interface ISmartPayrollFactory {
-//   function creditMint(address _creditAddress,address _employer,address _employee) external;
-//   function getUpkeeperID(address _upkeepContract) external returns(uint256);
-// }
 contract SmartPayrollByTime is AutomationCompatible {
+  using SafeERC20 for IERC20;
   /**
    * Public counter variable
    */
@@ -40,15 +34,12 @@ contract SmartPayrollByTime is AutomationCompatible {
   address public immutable i_credit;
   address public immutable i_DAOAddress;
 
-
-
-
   event AutomationTransfer(address indexed, address indexed, uint256 indexed);
   event WithdrawTransfer(address indexed, address indexed, uint256 indexed);
 
-  event Mint( address indexed, uint256 indexed);
+  event Mint(address indexed, uint256 indexed);
 
-  constructor(UpkeeperContract.contractParams memory _contractParams,  address _DAOAddress) {
+  constructor(UpkeeperContract.contractParams memory _contractParams, address _DAOAddress) {
     i_interval = _contractParams.updateInterval;
     i_ERC20Token = _contractParams._erc20Address;
     i_amount = _contractParams._amount;
@@ -58,14 +49,9 @@ contract SmartPayrollByTime is AutomationCompatible {
     i_credit = _contractParams._credit;
     i_DAOAddress = _DAOAddress;
 
-    
-
-
     counter = 0;
     lastTimeStamp = block.timestamp;
   }
-
-
 
   function checkUpkeep(
     bytes calldata /* checkData */
@@ -76,36 +62,28 @@ contract SmartPayrollByTime is AutomationCompatible {
   }
 
   function performUpkeep(bytes calldata /* performData */) external override {
-    //  uint256 upKeepID;
-    //We highly recommend revalidating the upkeep in the performUpkeep function
     if ((block.timestamp - lastTimeStamp) > i_interval) {
       if (i_ERC20Token == address(0)) {
-        require(getETHBalance() > i_amount, "ETH not enough");
-        payable(i_receiver).transfer(i_amount);
+        // the token is eth and transfer to employee address
+        _ethTransfer(i_amount, i_receiver);
+        emit AutomationTransfer(i_ERC20Token, i_receiver, i_amount);
       } else {
-        uint256 balance = getTokenBalance();
-        require(balance >= i_amount, "Not enough token");
-        bool transferSuccess = IERC20(i_ERC20Token).transfer(i_receiver, i_amount);
-        require(transferSuccess, "Token transfer to empolyee failed");
+        // the token is erc20 and transfer to employee address
+        _erc20Transfer(i_amount, i_receiver);
         emit AutomationTransfer(i_ERC20Token, i_receiver, i_amount);
       }
       // i_factory.creditMint(i_credit, i_sender, i_receiver);
       uint256 amount = 10000000000000000000;
       ICreditToken credit = ICreditToken(i_credit);
 
-      credit.mint(i_sender,amount);
-      emit Mint( i_sender, amount);
-      credit.mint(i_receiver,amount);
+      credit.mint(i_sender, amount);
+      emit Mint(i_sender, amount);
+      credit.mint(i_receiver, amount);
       emit Mint(i_receiver, amount);
       lastTimeStamp = block.timestamp;
       counter = counter + 1;
-      // if(counter==i_round){
-      //   upKeepID = i_factory.getUpkeeperID(address(this));
-      // }
     }
   }
-
-
 
   function getTokenBalance() public view returns (uint256 tokenAmount) {
     IERC20 token = IERC20(i_ERC20Token);
@@ -118,20 +96,32 @@ contract SmartPayrollByTime is AutomationCompatible {
 
   function contractDestruct() external {
     if (i_ERC20Token == address(0)) {
-      bool transferSuccess;
-      require(getETHBalance() > i_amount, "ETH not enough");
-      (transferSuccess, ) = payable(i_DAOAddress).call{value: i_amount}("");
-      require(transferSuccess, "Token transfer to DAOAddress failed");
-      (transferSuccess, ) = payable(i_sender).call{value: i_amount}("");
+      _ethTransfer(i_amount, i_DAOAddress);
+      uint256 balance = getETHBalance();
+      if (balance > 0) {
+        (bool Success, ) = payable(i_sender).call{value: balance}("");
+        require(Success, "ETH transfer to receiver failed");
+      }
     } else {
-      IERC20 token = IERC20(i_ERC20Token);
-      require(getTokenBalance() >= i_amount, "Not enough token");
-      bool transferSuccess = token.transfer(i_DAOAddress, i_amount);
-      require(transferSuccess, "Token transfer to DAOAddress failed");
-
-      transferSuccess = token.transfer(i_sender, token.balanceOf(address(this)));
+      _erc20Transfer(i_amount, i_DAOAddress);
+      uint256 balance = getTokenBalance();
+      if (balance > 0) {
+        IERC20(i_ERC20Token).safeTransfer(i_sender, balance);
+      }
     }
     emit WithdrawTransfer(i_DAOAddress, i_sender, i_amount);
+  }
+
+  function _ethTransfer(uint256 _amount, address _receiver) internal {
+    require(getETHBalance() > _amount, "ETH not enough");
+    (bool Success, ) = payable(_receiver).call{value: _amount}("");
+    require(Success, "ETH transfer to receiver failed");
+  }
+
+  function _erc20Transfer(uint256 _amount, address _receiver) internal {
+    uint256 balance = getTokenBalance();
+    require(balance >= _amount, "Not enough token");
+    IERC20(i_ERC20Token).safeTransfer(_receiver, _amount);
   }
 
   receive() external payable {}

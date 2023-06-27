@@ -48,7 +48,7 @@ const requestConfig = {
   walletPrivateKey: process.env["PRIVATE_KEY"],
   // Args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
   // args: ["0xab619164329aea8c44dcf8ca3dab3cfc5a31afa7450eb151210d6a651a1a5e18"],
-  args:["0x24c34d474a6f916961ece6fad389000a8bde897ab2f62904c46f78ee7cc08585"],
+  args: ["0x24c34d474a6f916961ece6fad389000a8bde897ab2f62904c46f78ee7cc08585"],
   // args: ["can you tell me what you are doing"],
   // args: ["New York City", "Washington DC"],
   // Expected type of the returned value

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-06 13:50:23
+ * @LastEditTime: 2023-06-26 16:16:12
  * @Description:
  */
 import { Button, Text } from '@chakra-ui/react';
@@ -10,8 +10,8 @@ import { utils, ethers } from 'ethers';
 import { useAccount } from 'wagmi';
 import smartPayrollFactoryAddress from '@/constants/smartPayrollFactoryAddress.json';
 import smartPayrollFactoryABI from '@/constants/smartPayrollFactoryABI.json';
-import { NETWORK,networkConfig } from '@/utils/config';
-import KeeperAutoSelfRegisterAddress from '@/constants/keeperAutoSelfRegisterAddress.json';
+import { NETWORK, networkConfig } from '@/utils/config';
+import functionsFactoryAddress from '@/constants/functionsFactoryAddress.json';
 import smartPayrollByTimeABI from '@/constants/smartPayrollByTimeABI.json';
 import ERC20ABI from '@/constants/ERC20ABI.json';
 import { useRouter } from 'next/router';
@@ -40,7 +40,7 @@ export default function WriteButton() {
   const taskParams = useTaskContext();
 
   const amount = ethers.utils.parseUnits(
-    taskParams.tokenAmount?.toString()||"0",
+    taskParams.tokenAmount?.toString() || '0',
     tokenList[0].Symbol
   );
   const upContractParams = [
@@ -51,7 +51,7 @@ export default function WriteButton() {
     taskParams.roundValue,
     amount,
     creditTokenAddress[NETWORK],
-    networkConfig[NETWORK].automationRegistry
+    functionsFactoryAddress[NETWORK],
   ];
 
   const signer = () => {
@@ -66,11 +66,11 @@ export default function WriteButton() {
   const smartPayrollFactory = useMemo(() => {
     const currentSigner = signer();
     if (typeof window !== 'undefined') {
-        const smartPayrollFactory = new ethers.Contract(
-          smartPayrollFactoryAddress[NETWORK],
-          smartPayrollFactoryABI,
-          currentSigner
-        );
+      const smartPayrollFactory = new ethers.Contract(
+        smartPayrollFactoryAddress[NETWORK],
+        smartPayrollFactoryABI,
+        currentSigner
+      );
       return smartPayrollFactory;
     }
   }, []);
@@ -167,7 +167,7 @@ export default function WriteButton() {
       setFirstIsLoad(false);
       taskParams.updateButtonType('upkeeper');
       setTrigger('');
-      console.log('send done!')
+      console.log('send done!');
     } catch (e) {
       console.log(e);
     }
@@ -204,7 +204,7 @@ export default function WriteButton() {
       let tx = await smartPayrollFactory?.createUpkeepContract(
         upContractParams
       );
-      const receipt = await tx.wait(1);
+      const receipt = await tx.wait(2);
       console.log(receipt);
       const DAOAddress = receipt.events[1].args[0];
       const upKeeperContract = receipt.events[2].args[0];

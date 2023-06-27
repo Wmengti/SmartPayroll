@@ -8,6 +8,8 @@ interface IKeeperRegistry2_0 {
   function pauseUpkeep(uint256 id) external;
 
   function unpauseUpkeep(uint256 id) external;
+
   function addFunds(uint256 id, uint96 amount) external;
-  function withdrawFunds(uint256 id, address to) external ;
+
+  function withdrawFunds(uint256 id, address to) external;
 }

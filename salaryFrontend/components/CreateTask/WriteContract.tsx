@@ -9,14 +9,14 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import { tokenList } from '@/utils/tokenList';
+import { tokenList } from "@/utils/tokenList";
 
-import { useTaskContext } from '@/contexts/taskProvider';
-import WriteButton from '@/components/CreateTask/WriteButton';
-import { useEffect } from 'react';
-import FaucetButton from '@/components/CreateTask/FaucetButton';
+import { useTaskContext } from "@/contexts/taskProvider";
+import WriteButton from "@/components/CreateTask/WriteButton";
+import { useEffect } from "react";
+import FaucetButton from "@/components/CreateTask/FaucetButton";
 
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
@@ -37,7 +37,7 @@ export default function WriteContract() {
     taskParams.updateTokenNumber(0);
     taskParams.updateTokenAddress(tokenList[0].Address);
     taskParams.updateTokenAmount(e);
-    console.log(taskParams.tokenAddress)
+    console.log(taskParams.tokenAddress);
     console.log(e);
   };
   const timeUintValueHandler = (e: any) => {
@@ -62,25 +62,25 @@ export default function WriteContract() {
 
   return (
     <>
-      <Text fontSize='xl' mb='8'>
+      <Text fontSize="xl" mb="8">
         The contract has been created. Now, set the details for your scheduled
         task and deposit the funds to be distributed
       </Text>
       <Box
-        bg='gray.200'
-        maxW='2xl'
-        borderWidth='1px'
-        borderRadius='lg'
-        overflow='hidden'
-        p='10'
+        bg="gray.200"
+        maxW="2xl"
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        p="10"
       >
-        <form className='flex flex-col gap-5'>
-          <div className='flex gap-10'>
-            <div className='flex flex-col  '>
-              <FormLabel as='legend'>Token</FormLabel>
+        <form className="flex flex-col gap-5">
+          <div className="flex gap-10">
+            <div className="flex flex-col  ">
+              <FormLabel as="legend">Token</FormLabel>
               <Select
-                width='fit-content'
-                bg='white'
+                width="fit-content"
+                bg="white"
                 value={0}
                 onChange={tokenSelectHandler}
               >
@@ -91,12 +91,12 @@ export default function WriteContract() {
                 ))}
               </Select>
             </div>
-            <div className='flex flex-col '>
-              <FormLabel as='legend'>Amount</FormLabel>
+            <div className="flex flex-col ">
+              <FormLabel as="legend">Amount</FormLabel>
               {/* <Input type="Number" bg="white" placeholder="Number" width="fit-content" /> */}
               <NumberInput
-                bg='white'
-                width='40'
+                bg="white"
+                width="40"
                 min={0}
                 value={taskParams.tokenAmount}
                 onChange={amountTokenHandler}
@@ -109,29 +109,28 @@ export default function WriteContract() {
               </NumberInput>
             </div>
             <FaucetButton />
-             
           </div>
-          <div className='flex gap-10'>
-            <div className='flex flex-col  '>
-              <FormLabel as='legend'>Time Unit</FormLabel>
+          <div className="flex gap-10">
+            <div className="flex flex-col  ">
+              <FormLabel as="legend">Time Unit</FormLabel>
               <Select
-                placeholder='Select option'
-                width='fit-content'
-                bg='white'
+                placeholder="Select option"
+                width="fit-content"
+                bg="white"
                 value={taskParams.timeUnitValue}
                 onChange={timeUintValueHandler}
               >
-                <option value='Month'>Month</option>
-                <option value='Day'>Day</option>
-                <option value='Hour'>Hour</option>
-                <option value='Minute'>Minute</option>
+                <option value="Month">Month</option>
+                <option value="Day">Day</option>
+                <option value="Hour">Hour</option>
+                <option value="Minute">Minute</option>
               </Select>
             </div>
-            <div className='flex flex-col '>
-              <FormLabel as='legend'>Time Interval</FormLabel>
+            <div className="flex flex-col ">
+              <FormLabel as="legend">Time Interval</FormLabel>
               <NumberInput
-                bg='white'
-                width='40'
+                bg="white"
+                width="40"
                 min={0}
                 onChange={timeIntervalValueHandler}
                 value={taskParams.timeIntervalValue}
@@ -143,11 +142,11 @@ export default function WriteContract() {
                 </NumberInputStepper>
               </NumberInput>
             </div>
-            <div className='flex flex-col '>
-              <FormLabel as='legend'>Round</FormLabel>
+            <div className="flex flex-col ">
+              <FormLabel as="legend">Round</FormLabel>
               <NumberInput
-                bg='white'
-                width='40'
+                bg="white"
+                width="40"
                 min={0}
                 onChange={roundValueHandler}
                 value={taskParams.roundValue}

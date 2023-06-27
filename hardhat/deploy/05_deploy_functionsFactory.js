@@ -1,19 +1,17 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-26 13:59:22
- * @Description: 
+ * @Description:
  */
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-18 19:35:34
- * @Description: 
+ * @Description:
  */
-const { verify} = require("../utils/verify")
-const { writeFile} = require("../utils/writeFile")
-const {  
-  functionsFactoryPath
-,functionsFactoryABI} = require("../utils/config")
-  const fs = require("fs")
+const { verify } = require("../utils/verify")
+const { writeFile } = require("../utils/writeFile")
+const { functionsFactoryPath, functionsFactoryABI } = require("../utils/config")
+const fs = require("fs")
 
 const { ethers } = require("hardhat")
 const hre = require("hardhat")
@@ -31,16 +29,10 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     waitConfirmations: network.config.blockConfirmations || 1,
   })
 
-  writeFile(functionsFactoryPath,network.name ,funtionsFactory.address);
-  const funtionsFactoryProvider = await ethers.getContract('FuntionsFactory');
+  writeFile(functionsFactoryPath, network.name, funtionsFactory.address)
+  const funtionsFactoryProvider = await ethers.getContract("FuntionsFactory")
 
-  fs.writeFileSync(
-    functionsFactoryABI,
-    funtionsFactoryProvider.interface.format(ethers.utils.FormatTypes.json)
-  );
-
-
-
+  fs.writeFileSync(functionsFactoryABI, funtionsFactoryProvider.interface.format(ethers.utils.FormatTypes.json))
 
   if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
     await verify(funtionsFactory.address, args)

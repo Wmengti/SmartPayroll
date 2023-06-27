@@ -8,31 +8,21 @@ import {AutomationRegistryInterface, State, OnchainConfig} from "@chainlink/cont
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import {IKeeperRegistrar} from "./interface/IKeeperRegistrar.sol";
 
-
 import {Registration} from "./library/Registration.sol";
-/**
- * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
- * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
- * DO NOT USE THIS CODE IN PRODUCTION.
- */
 
-
-
-contract KeeperAutoSelfRegister  {
+contract KeeperAutoSelfRegister {
   LinkTokenInterface public immutable i_link;
-  address public immutable registrar;
+  address public immutable i_registrar;
   AutomationRegistryInterface public immutable i_registry;
-  bytes4 registerSig = IKeeperRegistrar.register.selector;
+  bytes4 public registerSig = IKeeperRegistrar.register.selector;
 
   constructor(LinkTokenInterface _link, address _registrar, AutomationRegistryInterface _registry) {
     i_link = _link;
-    registrar = _registrar;
+    i_registrar = _registrar;
     i_registry = _registry;
   }
-  
-  function registerAndPredictID(
-    Registration.RegistrationParams memory params
-  ) public returns(uint256 upkeepID){
+
+  function registerAndPredictID(Registration.RegistrationParams memory params) public returns (uint256 upkeepID) {
     (State memory state, , , , ) = i_registry.getState();
     uint256 oldNonce = state.nonce;
     bytes memory payload = abi.encode(
@@ -47,7 +37,7 @@ contract KeeperAutoSelfRegister  {
       address(this)
     );
 
-    i_link.transferAndCall(registrar, params.amount, bytes.concat(registerSig, payload));
+    i_link.transferAndCall(i_registrar, params.amount, bytes.concat(registerSig, payload));
     (state, , , , ) = i_registry.getState();
     uint256 newNonce = state.nonce;
     if (newNonce == oldNonce + 1) {

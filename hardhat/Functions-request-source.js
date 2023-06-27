@@ -1,7 +1,7 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-27 09:36:30
- * @Description: 
+ * @Description:
  */
 // No authentication. demonstrate POST with data in body
 // callgraphql api: https://github.com/trevorblades/countries

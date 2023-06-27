@@ -8,7 +8,7 @@
 // docs: https://trevorblades.github.io/countries/queries/continent
 
 // make HTTP request
-const source =`
+const source = `
 const countryCode = args[0]
 const url = "https://countries.trevorblades.com/"
 
@@ -54,5 +54,5 @@ const result = {
 // Finally, use the helper Functions.encodeString() to encode from string to bytes
 return Functions.encodeString(JSON.stringify(result))
 
-`
+`;
 module.exports = source;

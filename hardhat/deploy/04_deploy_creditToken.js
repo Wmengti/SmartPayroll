@@ -1,12 +1,10 @@
-const { verify} = require("../utils/verify")
-const { writeFile} = require("../utils/writeFile")
+const { verify } = require("../utils/verify")
+const { writeFile } = require("../utils/writeFile")
 const { ethers } = require("hardhat")
-const {  
-  creditTokenPath,
-  creditTokenABI} = require("../utils/config")
+const { creditTokenPath, creditTokenABI } = require("../utils/config")
 const fs = require("fs")
 const hre = require("hardhat")
-const {networks,NETWORK} = require("../networks")
+const { networks, NETWORK } = require("../networks")
 const factoryAddress = require("../../salaryFrontend/constants/smartPayrollFactoryAddress.json")
 
 module.exports = async ({ deployments, getNamedAccounts }) => {
@@ -22,12 +20,9 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
     waitConfirmations: network.config.blockConfirmations || 1,
   })
 
-  writeFile(creditTokenPath,network.name ,creditToken.address);
-  const creditTokenProvider = await ethers.getContract('CreditToken');
-  fs.writeFileSync(
-    creditTokenABI,
-    creditTokenProvider.interface.format(ethers.utils.FormatTypes.json)
-  );
+  writeFile(creditTokenPath, network.name, creditToken.address)
+  const creditTokenProvider = await ethers.getContract("CreditToken")
+  fs.writeFileSync(creditTokenABI, creditTokenProvider.interface.format(ethers.utils.FormatTypes.json))
 
   if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
     await verify(creditToken.address, args)
