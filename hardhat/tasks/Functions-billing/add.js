@@ -1,7 +1,7 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-26 20:55:44
- * @Description: 
+ * @Description:
  */
 const { networks } = require("../../networks")
 

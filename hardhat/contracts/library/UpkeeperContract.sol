@@ -2,7 +2,6 @@
 pragma solidity ^0.8.6;
 
 library UpkeeperContract {
-
   struct contractParams {
     uint updateInterval;
     address _erc20Address;
@@ -11,6 +10,6 @@ library UpkeeperContract {
     uint256 _round;
     uint256 _amount;
     address _credit;
+    address _FunctionsFactory;
   }
-  
 }

@@ -1,8 +1,9 @@
 <!--
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-06-06 16:54:38
- * @Description: 
+ * @Description:
 -->
+
 ---
 
 ## Getting Started
@@ -35,7 +36,6 @@ To use this template, follow these steps:
 Now you can open your browser and navigate to [http://localhost:3000](http://localhost:3000) to see the boilerplate in action.
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
 
 ---
 

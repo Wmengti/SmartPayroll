@@ -1,47 +1,33 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-27 22:21:06
- * @Description: 
+ * @Description:
  */
-import { Html, Head, Main, NextScript } from 'next/document';
+import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
-	return (
-		<Html lang='en'>
-			<Head>
-				{/* Character Set */}
-				<meta charSet='utf-8' />
+  return (
+    <Html lang="en">
+      <Head>
+        {/* Character Set */}
+        <meta charSet="utf-8" />
 
-				{/* Favicon */}
-				<link
-					rel='apple-touch-icon'
-					sizes='180x180'
-					href='/money.png'
-				/>
-				<link
-					rel='icon'
-					type='image/png'
-					sizes='32x32'
-					href='/money.png'
-				/>
-				<link
-					rel='icon'
-					type='image/png'
-					sizes='16x16'
-					href='/money.png'
-				/>
-				<link rel='manifest' href='/favicon/site.webmanifest' />
+        {/* Favicon */}
+        <link rel="apple-touch-icon" sizes="180x180" href="/money.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/money.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/money.png" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
 
-				{/* Robots Search Indexing */}
-				<meta
-					name='robots'
-					content='follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large'
-				/>
-			</Head>
-			<body>
-				<Main />
-				<NextScript />
-			</body>
-		</Html>
-	);
+        {/* Robots Search Indexing */}
+        <meta
+          name="robots"
+          content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"
+        />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
 }

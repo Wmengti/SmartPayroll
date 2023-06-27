@@ -35,7 +35,7 @@
     "hardhat": "^2.14.0",
     "hardhat-contract-sizer": "^2.6.1",
     "hardhat-gas-reporter": "^1.0.9",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24",
@@ -58,6 +58,11 @@
     "readline": "^1.3.0",
     "vm2": "^3.9.17"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "prettier --write . && git add -A ."
+    }
+  },
   "lint-staged": {
     "*.{js,json,yml,yaml}": [
       "prettier --write"
@@ -70,7 +75,7 @@
   "prettier": {
     "trailingComma": "es5",
     "tabWidth": 2,
-    "semi": false,
+    "semi": true,
     "singleQuote": false,
     "printWidth": 120
   }

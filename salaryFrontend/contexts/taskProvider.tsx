@@ -4,14 +4,14 @@ import {
   ReactNode,
   useContext,
   useState,
-} from 'react';
+} from "react";
 
 export interface TaskCreateProviderValues {
   adminAddress: string;
   emailAddress: string;
   contractName: string;
-  contractAddress:string,
-  description?:string,
+  contractAddress: string;
+  description?: string;
   receiver: string;
   buttonType: string;
   workType: string;
@@ -29,14 +29,13 @@ export interface TaskCreateProviderValues {
   endTime?: string;
   upKeepId?: string;
   image?: string;
-  DAOAddress:string;
-
+  DAOAddress: string;
 
   updateAdminAddress: (adminAddress: string) => void;
   updateEmailAddress: (emailAddress: string) => void;
   updateContractName: (contractName: string) => void;
-  updateContractAddress:(contractAddress:string)=>void;
-  updateDescription:(description:string)=>void;
+  updateContractAddress: (contractAddress: string) => void;
+  updateDescription: (description: string) => void;
   updateReceiver: (receiver: string) => void;
   updateButtonType: (buttonType: string) => void;
   updateWorkType: (workType: string) => void;
@@ -61,34 +60,34 @@ export interface TaskCreateProviderValues {
 }
 
 const defaultValues = {
-  adminAddress: '',
-  emailAddress: '',
-  contractName: '',
-  contractAddress:'',
-  description:'',
-  receiver: '',
-  buttonType: 'create',
-  workType: '',
-  tokenAddress: '',
+  adminAddress: "",
+  emailAddress: "",
+  contractName: "",
+  contractAddress: "",
+  description: "",
+  receiver: "",
+  buttonType: "create",
+  workType: "",
+  tokenAddress: "",
   tokenNumber: 0,
   tokenAmount: 0,
-  timeUnitValue: '',
+  timeUnitValue: "",
   timeIntervalValue: 0,
   roundValue: 0,
   intervalSeconds: 0,
-  upkeeperContract: '',
-  contractState: '',
-  proposal: '',
-  proposalID: '',
-  endTime: '',
-  upKeepId:'',
-  image:'',
-  DAOAddress:'',
+  upkeeperContract: "",
+  contractState: "",
+  proposal: "",
+  proposalID: "",
+  endTime: "",
+  upKeepId: "",
+  image: "",
+  DAOAddress: "",
   updateAdminAddress: () => null,
   updateEmailAddress: () => null,
   updateContractName: () => null,
-  updateContractAddress:()=>null,
-  updateDescription:()=>null,
+  updateContractAddress: () => null,
+  updateDescription: () => null,
   updateReceiver: () => null,
   updateButtonType: () => null,
   updateWorkType: () => null,
@@ -106,7 +105,7 @@ const defaultValues = {
   updateEndTime: () => null,
   updateUpKeepId: () => null,
   updateImage: () => null,
-  updateDAOAddress:() => null,
+  updateDAOAddress: () => null,
 };
 
 const taskContext = createContext<TaskCreateProviderValues>(defaultValues);
@@ -122,32 +121,31 @@ interface taskContextProviderProps extends DefaultModeProps {
 export const TaskContextProvider = ({
   children,
 }: taskContextProviderProps): ReactElement => {
-  const [adminAddress, setAdminAddress] = useState('');
-  const [emailAddress, setEmailAddress] = useState('');
-  const [contractName, setContractName] = useState('');
-  const [contractAddress, setContractAddress] = useState('');
-  const [description, setDescription] = useState('');
-  const [receiver, setReceiver] = useState('');
-  const [buttonType, setButtonType] = useState('create');
-  const [workType, setWorkType] = useState('');
-  const [tokenAddress, setTokenAddress] = useState('');
+  const [adminAddress, setAdminAddress] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [contractName, setContractName] = useState("");
+  const [contractAddress, setContractAddress] = useState("");
+  const [description, setDescription] = useState("");
+  const [receiver, setReceiver] = useState("");
+  const [buttonType, setButtonType] = useState("create");
+  const [workType, setWorkType] = useState("");
+  const [tokenAddress, setTokenAddress] = useState("");
   const [tokenNumber, setTokenNumber] = useState(0);
 
   const [tokenAmount, setTokenAmount] = useState(0);
-  const [timeUnitValue, setTimeUnitValue] = useState('');
+  const [timeUnitValue, setTimeUnitValue] = useState("");
   const [timeIntervalValue, setTimeIntervalValue] = useState(0);
   const [roundValue, setRoundValue] = useState(0);
   const [intervalSeconds, setIntervalSeconds] = useState(0);
-  const [upkeeperContract, setUpkeeperContract] = useState('');
+  const [upkeeperContract, setUpkeeperContract] = useState("");
 
-  const [contractState, setContractState] = useState('');
-  const [proposal, setProposal] = useState('');
-  const [proposalID, setProposalID] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [upKeepId,setUpKeepId] = useState('');
-  const [image,setImage] = useState('');
-  const [DAOAddress,setDAOAddress] = useState('');
-
+  const [contractState, setContractState] = useState("");
+  const [proposal, setProposal] = useState("");
+  const [proposalID, setProposalID] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [upKeepId, setUpKeepId] = useState("");
+  const [image, setImage] = useState("");
+  const [DAOAddress, setDAOAddress] = useState("");
 
   const updateAdminAddress = (adminAddress: string) => {
     setAdminAddress(adminAddress);
@@ -158,13 +156,13 @@ export const TaskContextProvider = ({
   const updateContractName = (contractName: string) => {
     setContractName(contractName);
   };
-  const updateContractAddress=(contractAddress:string)=>{
+  const updateContractAddress = (contractAddress: string) => {
     setContractAddress(contractAddress);
   };
 
-  const updateDescription= (description:string)=>{
-    setDescription(description)
-  }
+  const updateDescription = (description: string) => {
+    setDescription(description);
+  };
   const updateReceiver = (receiver: string) => {
     setReceiver(receiver);
   };
@@ -198,25 +196,25 @@ export const TaskContextProvider = ({
     timeIntervalValue: number
   ) => {
     if (
-      timeUnitValue === 'Month' &&
+      timeUnitValue === "Month" &&
       timeIntervalValue !== undefined &&
       timeIntervalValue > 0
     ) {
       setIntervalSeconds(timeIntervalValue * 30 * 24 * 60 * 60);
     } else if (
-      timeUnitValue === 'Day' &&
+      timeUnitValue === "Day" &&
       timeIntervalValue !== undefined &&
       timeIntervalValue > 0
     ) {
       setIntervalSeconds(timeIntervalValue * 24 * 60 * 60);
     } else if (
-      timeUnitValue === 'Hour' &&
+      timeUnitValue === "Hour" &&
       timeIntervalValue !== undefined &&
       timeIntervalValue > 0
     ) {
       setIntervalSeconds(timeIntervalValue * 60 * 60);
     } else if (
-      timeUnitValue === 'Minute' &&
+      timeUnitValue === "Minute" &&
       timeIntervalValue !== undefined &&
       timeIntervalValue > 0
     ) {
@@ -239,15 +237,15 @@ export const TaskContextProvider = ({
   const updateEndTime = (endTime: string) => {
     setEndTime(endTime);
   };
-  const updateUpKeepId =  (upKeepId:string) => {
+  const updateUpKeepId = (upKeepId: string) => {
     setUpKeepId(upKeepId);
-  }
-  const updateImage =  (image:string) => {
+  };
+  const updateImage = (image: string) => {
     setImage(image);
-  }
-  const updateDAOAddress = (DAOAddress:string) => {
+  };
+  const updateDAOAddress = (DAOAddress: string) => {
     setDAOAddress(DAOAddress);
-  }
+  };
 
   return (
     <taskContext.Provider

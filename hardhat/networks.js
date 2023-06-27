@@ -1,7 +1,7 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-25 12:34:26
- * @Description: 
+ * @Description:
  */
 // All supported networks and related contract addresses are defined here.
 //
@@ -23,7 +23,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY
 if (!isTestEnvironment && !PRIVATE_KEY) {
   throw Error("Set the PRIVATE_KEY environment variable with your EVM wallet private key")
 }
-const NETWORK ='polygonMumbai';
+const NETWORK = "polygonMumbai"
 const networks = {
   ethereumSepolia: {
     url: process.env.ETHEREUM_SEPOLIA_RPC_URL || "UNSET",
@@ -37,8 +37,8 @@ const networks = {
     linkPriceFeed: "0x42585eD362B3f1BCa95c640FdFf35Ef899212734",
     functionsOracleProxy: "0x649a2C205BE7A3d5e99206CEEFF30c794f0E31EC",
     functionsBillingRegistryProxy: "0x3c79f56407DCB9dc9b852D139a317246f43750Cc",
-    automationRegistry:"0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
-    automationRegistrar:"0x9a811502d843E5a03913d5A2cfb646c11463467A",
+    automationRegistry: "0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
+    automationRegistrar: "0x9a811502d843E5a03913d5A2cfb646c11463467A",
     functionsPublicKey: SHARED_DON_PUBLIC_KEY,
   },
   polygonMumbai: {
@@ -53,8 +53,8 @@ const networks = {
     linkPriceFeed: "0x12162c3E810393dEC01362aBf156D7ecf6159528", // LINK/MATIC
     functionsOracleProxy: "0xeA6721aC65BCeD841B8ec3fc5fEdeA6141a0aDE4",
     functionsBillingRegistryProxy: "0xEe9Bf52E5Ea228404bB54BCFbbDa8c21131b9039",
-    automationRegistry:"0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
-    automationRegistrar:"0x57A4a13b35d25EE78e084168aBaC5ad360252467",
+    automationRegistry: "0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
+    automationRegistrar: "0x57A4a13b35d25EE78e084168aBaC5ad360252467",
     functionsPublicKey: SHARED_DON_PUBLIC_KEY,
   },
   avalancheFuji: {
@@ -69,16 +69,14 @@ const networks = {
     linkPriceFeed: "0x79c91fd4F8b3DaBEe17d286EB11cEE4D83521775", // LINK/AVAX
     functionsOracleProxy: "0xE569061eD8244643169e81293b0aA0d3335fD563",
     functionsBillingRegistryProxy: "0x452C33Cef9Bc773267Ac5F8D85c1Aca2bA4bcf0C",
-    automationRegistry:"0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
-    automationRegistrar:"0x57A4a13b35d25EE78e084168aBaC5ad360252467",
+    automationRegistry: "0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
+    automationRegistrar: "0x57A4a13b35d25EE78e084168aBaC5ad360252467",
     functionsPublicKey: SHARED_DON_PUBLIC_KEY,
   },
 }
 
-
-
 module.exports = {
   networks,
   SHARED_DON_PUBLIC_KEY,
-  NETWORK
+  NETWORK,
 }

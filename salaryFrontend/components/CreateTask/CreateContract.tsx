@@ -13,15 +13,15 @@ import {
   ButtonGroup,
   Button,
   IconButton,
-} from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
-import { useEffect, useState, useRef } from 'react';
+} from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { useEffect, useState, useRef } from "react";
 
-import CreateButton from '@/components/CreateTask/CreateButton';
-import { useTaskContext } from '@/contexts/taskProvider';
-import { v4 as uuidv4 } from 'uuid';
+import CreateButton from "@/components/CreateTask/CreateButton";
+import { useTaskContext } from "@/contexts/taskProvider";
+import { v4 as uuidv4 } from "uuid";
 
-import { useAccount } from 'wagmi';
+import { useAccount } from "wagmi";
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-20 11:21:32
@@ -33,8 +33,8 @@ export default function CreateContract() {
   const [EmailIsError, setEmailIsError] = useState(false);
   const [addressError, setAddressError] = useState(false);
   const [nameError, setNameError] = useState(false);
-  const [isDisabled,setDisabled] = useState(true);
-  const {address} = useAccount();
+  const [isDisabled, setDisabled] = useState(true);
+  const { address } = useAccount();
 
   const emailInputHandler = (e: any) => {
     const reEmail =
@@ -42,10 +42,8 @@ export default function CreateContract() {
     taskParams.updateEmailAddress(e.target.value);
     if (e.target.value && reEmail.test(e.target.value)) {
       setEmailIsError(false);
-
     } else {
       setEmailIsError(true);
-  
     }
   };
 
@@ -55,17 +53,15 @@ export default function CreateContract() {
   };
   const addressInputHandler = (e: any) => {
     taskParams.updateReceiver(e.target.value);
-    if (e.target.value.length == 42 ) {
+    if (e.target.value.length == 42) {
       setAddressError(false);
     } else {
       setAddressError(true);
     }
-
   };
 
   const nameInputHandler = (e: any) => {
-  
-    if (e.target.value=='' ) {
+    if (e.target.value == "") {
       setNameError(true);
     } else {
       setNameError(false);
@@ -80,7 +76,6 @@ export default function CreateContract() {
 
   const decriptionHandler = (e: any) => {
     taskParams.updateDescription(e.target.value);
-  
   };
 
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -89,15 +84,13 @@ export default function CreateContract() {
     hiddenFileInput.current?.click();
   };
 
-  useEffect(()=>{
-    if(EmailIsError|| addressError || nameError){
+  useEffect(() => {
+    if (EmailIsError || addressError || nameError) {
       setDisabled(true);
- 
-    }else{
+    } else {
       setDisabled(false);
     }
-  },[EmailIsError , addressError , nameError])
-
+  }, [EmailIsError, addressError, nameError]);
 
   // const  uploadImageToS3 = async (file: File, dir: string)=>{
   //     const fileType = encodeURIComponent(file.type)
@@ -141,24 +134,24 @@ export default function CreateContract() {
 
   return (
     <>
-      <Text fontSize='xl' mb='8'>
+      <Text fontSize="xl" mb="8">
         Establish your partnership by creating a payroll contract
       </Text>
       <Box
-        bg='gray.200'
-        maxW='2xl'
-        borderWidth='1px'
-        borderRadius='lg'
-        overflow='hidden'
-        p='10'
+        bg="gray.200"
+        maxW="2xl"
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        p="10"
       >
-        <form className='flex flex-col gap-5' onSubmit={contractSubmitHander}>
+        <form className="flex flex-col gap-5" onSubmit={contractSubmitHander}>
           <FormControl isRequired isInvalid={nameError}>
             <FormLabel>Contract Name</FormLabel>
             <Input
-              type='name'
-              bg='white'
-              placeholder='Solidity developer'
+              type="name"
+              bg="white"
+              placeholder="Solidity developer"
               onChange={nameInputHandler}
               value={taskParams.contractName}
             />
@@ -170,15 +163,13 @@ export default function CreateContract() {
             ) : (
               <FormHelperText></FormHelperText>
             )}
-            
-          
           </FormControl>
           <FormControl isRequired isInvalid={EmailIsError}>
             <FormLabel>Email Address</FormLabel>
             <Input
-              type='email'
-              bg='white'
-              placeholder='example@email.com'
+              type="email"
+              bg="white"
+              placeholder="example@email.com"
               onChange={emailInputHandler}
               value={taskParams.emailAddress}
             />
@@ -191,9 +182,9 @@ export default function CreateContract() {
           <FormControl isRequired isInvalid={addressError}>
             <FormLabel>Employee Address</FormLabel>
             <Input
-              type='Contract Address'
-              bg='white'
-              placeholder='0x...'
+              type="Contract Address"
+              bg="white"
+              placeholder="0x..."
               onChange={addressInputHandler}
               value={taskParams.receiver}
             />
@@ -203,24 +194,24 @@ export default function CreateContract() {
               <FormHelperText></FormHelperText>
             )}
           </FormControl>
-          <FormControl as='fieldset' isRequired>
-            <FormLabel as='legend'>Type of Work</FormLabel>
+          <FormControl as="fieldset" isRequired>
+            <FormLabel as="legend">Type of Work</FormLabel>
             <RadioGroup
-              defaultValue='fulltime'
+              defaultValue="fulltime"
               value={taskParams.workType}
               onChange={workHandler}
             >
-              <HStack spacing='24px'>
-                <Radio value='fulltime' bg='white'>
+              <HStack spacing="24px">
+                <Radio value="fulltime" bg="white">
                   fulltime
                 </Radio>
-                <Radio value='parttime' bg='white'>
+                <Radio value="parttime" bg="white">
                   parttime
                 </Radio>
-                <Radio value='bounty' bg='white'>
+                <Radio value="bounty" bg="white">
                   bounty
                 </Radio>
-                <Radio value='none of the above' bg='white'>
+                <Radio value="none of the above" bg="white">
                   none of the above
                 </Radio>
               </HStack>
@@ -229,36 +220,36 @@ export default function CreateContract() {
           <FormControl>
             <FormLabel>Describe the Contract Contents (Optional)</FormLabel>
             <Textarea
-              placeholder='Here is a sample placeholder'
-              bg='white'
+              placeholder="Here is a sample placeholder"
+              bg="white"
               onChange={decriptionHandler}
               value={taskParams.description}
             />
           </FormControl>
-          <ButtonGroup size='sm' isAttached variant='outline'>
-            <label htmlFor='file-upload' className='upload-button'>
-              <Button bg='gray.300' onClick={handleImageSelectButtonClick}>
+          <ButtonGroup size="sm" isAttached variant="outline">
+            <label htmlFor="file-upload" className="upload-button">
+              <Button bg="gray.300" onClick={handleImageSelectButtonClick}>
                 Upload Contract Content by Taking a Photo(Optional)
               </Button>
 
               <input
-                id='file-upload'
-                type='file'
-                className='hidden'
-                accept='image/png, image/jpeg, image/jpg'
+                id="file-upload"
+                type="file"
+                className="hidden"
+                accept="image/png, image/jpeg, image/jpg"
                 ref={hiddenFileInput}
                 // onChange={imageChangeHandler}
               />
             </label>
             <IconButton
-              bg='white'
-              aria-label='file-upload'
+              bg="white"
+              aria-label="file-upload"
               icon={<AddIcon />}
               onClick={handleImageSelectButtonClick}
             />
           </ButtonGroup>
 
-          <CreateButton isDisabled={isDisabled}/>
+          <CreateButton isDisabled={isDisabled} />
         </form>
       </Box>
     </>

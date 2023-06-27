@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
-
-
 interface IKeeperRegistrar {
   function register(
     string memory name,

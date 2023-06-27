@@ -1,11 +1,10 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-06-04 22:06:23
- * @Description: 
+ * @Description:
  */
 
-const source =
-`const proposalID = args[0]
+const source = `const proposalID = args[0]
 
 
 if (!proposalID) {

@@ -4,24 +4,11 @@ pragma solidity ^0.8.7;
 import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
 // import "@chainlink/contracts/src/v0.8/dev/functions/FunctionsClient.sol"; // Once published
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
-import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
+import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import {ISmartPayrollFactory} from "./interface/ISmartPayrollFactory.sol";
 import {IDAOVault} from "./interface/IDAOVault.sol";
 
-/**
- * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
- * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
- * DO NOT USE THIS CODE IN PRODUCTION.
- */
-// interface ISmartPayrollFactory{
-//   function withdrawDAOVault(bytes memory response,address _DAOAddress) external;
-// }
-
-contract AutomatedFunctions is
-  FunctionsClient,
-  ConfirmedOwner,
-  AutomationCompatibleInterface
-{
+contract AutomatedFunctions is FunctionsClient, ConfirmedOwner, AutomationCompatibleInterface {
   using Functions for Functions.Request;
 
   bytes public requestCBOR;
@@ -40,8 +27,7 @@ contract AutomatedFunctions is
   uint public lastTimeStamp;
 
   event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
-  event RequestSentByTime(bytes32 indexed, uint indexed, uint indexed);
-  event FillfullAction(bytes indexed, address indexed);
+  event RequestSentByTime(bytes32 indexed requestId, uint indexed blockTime, uint indexed interval);
 
   constructor(
     address oracle,
@@ -106,18 +92,19 @@ contract AutomatedFunctions is
     bytes32 requestId = s_oracle.sendRequest(subscriptionId, requestCBOR, fulfillGasLimit);
 
     s_pendingRequests[requestId] = s_oracle.getRegistry();
-    emit RequestSent(requestId);
+
     latestRequestId = requestId;
+    emit RequestSent(requestId);
   }
 
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
     latestResponse = response;
     latestError = err;
     responseCounter = responseCounter + 1;
-    emit OCRResponse(requestId, response, err);
+
     IDAOVault(DAOAddress).withdrawFunds(latestResponse);
     // ISmartPayrollFactory(factoryAddress).withdrawDAOVault(latestResponse,DAOAddress);
-    emit FillfullAction(latestResponse, DAOAddress);
+    emit OCRResponse(requestId, response, err);
   }
 
   function updateOracleAddress(address oracle) public onlyOwner {

@@ -1,6 +1,6 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
- * @LastEditTime: 2023-06-05 19:10:15
+ * @LastEditTime: 2023-06-26 15:38:48
  * @Description:
  */
 import Image from 'next/image';
@@ -11,8 +11,7 @@ import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import { Box } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { useNetwork,useSwitchNetwork } from 'wagmi'
-
+import { useNetwork, useSwitchNetwork } from 'wagmi';
 
 const inter = Inter({ subsets: ['latin'] });
 interface propsTypes {
@@ -20,7 +19,7 @@ interface propsTypes {
   title: string;
 }
 
-export default function Home(props:any) {
+export default function Home(props: any) {
   const origin =
     typeof window !== 'undefined' && window.location.origin
       ? window.location.origin
@@ -28,24 +27,16 @@ export default function Home(props:any) {
   console.log(props);
   // const chainID:number= 80001;
 
- 	const { chain:currentChain} = useNetwork()
-	const { switchNetwork } =
-    useSwitchNetwork();
+  const { chain: currentChain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
 
-  
-   
-  
-
-	useEffect(() => {
-	if (currentChain && currentChain.name !== "polygonMumbai") {
-    if (typeof switchNetwork === 'function'){
-      switchNetwork(80001)
+  useEffect(() => {
+    if (currentChain && currentChain.name !== 'polygonMumbai') {
+      if (typeof switchNetwork === 'function') {
+        switchNetwork(80001);
+      }
     }
-    
-		
-	}
-}, [currentChain]);
-
+  }, [currentChain]);
 
   return (
     <main
@@ -75,43 +66,50 @@ export default function Home(props:any) {
               </span>
             </h2>
             <p className={`m-0 max-w-[40ch] text-md opacity-50`}>
-            Create a smart payroll contract for your employees
+              Create a smart payroll contract for your employees
             </p>
           </Link>
         </div>
       </div>
       <div className='w-[40vw]  '>
         <h2 className='text-2xl font-semibold px-3 pb-3'>DAO vote link</h2>
-        <Box bg='white' w='40vw' h='70vh' px={8} py={5}  borderWidth={10} borderRadius={40}>
+        <Box
+          bg='white'
+          w='40vw'
+          h='70vh'
+          px={8}
+          py={5}
+          borderWidth={10}
+          borderRadius={40}
+        >
           <ul>
-          {
-            props.proposals.map((proposal:propsTypes, index: number)=>(
+            {props.proposals.map((proposal: propsTypes, index: number) => (
               <li key={proposal.id}>
-              <Link href={`https://demo.snapshot.org/#/0x3c.eth/proposal/${proposal.id}`} key={proposal.id} className='hover:underline'>
-              {index + 1}. {proposal.title}
-            </Link>
-            </li>
-            ))
-
-          }
+                <Link
+                  href={`https://demo.snapshot.org/#/0x3c.eth/proposal/${proposal.id}`}
+                  key={proposal.id}
+                  className='hover:underline'
+                >
+                  {index + 1}. {proposal.title}
+                </Link>
+              </li>
+            ))}
           </ul>
-           
         </Box>
       </div>
     </main>
   );
 }
 
-
 export async function getStaticProps() {
   const config = {
     method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        operationName: "space",
-        query: `
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      operationName: 'space',
+      query: `
           query space{
             proposals (
               first: 20,
@@ -128,29 +126,42 @@ export async function getStaticProps() {
             }
           }
        `,
-        variables: null,
-      }),
+      variables: null,
+    }),
+  };
+  let response: any;
+  try {
+    response = await fetch('https://testnet.snapshot.org/graphql?', config);
+  } catch (err) {
+    console.error('An error occurred:', err);
+    return {
+      props: {
+        proposals: [], // Return an empty array or a default value
+      },
+      revalidate: 10,
+    };
   }
 
-    const response = await fetch('https://testnet.snapshot.org/graphql?', config)
-   
-    const data= await response.json();
+  if (!response.ok) {
+    console.log('Fetch failed:', response.status, response.statusText);
+    return {
+      props: {
+        proposals: [],
+      },
+      revalidate: 10,
+    };
+  } else {
+    const data = await response.json();
     // console.log(data)
-    
- 
-  
 
-  return {
-    props: {
-      proposals:
-      data.data.proposals.map((proposal:propsTypes)=>({
+    return {
+      props: {
+        proposals: data?.data.proposals.map((proposal: propsTypes) => ({
           id: proposal.id,
-          title: proposal.title
-        }))
-      
-    
-     
-    },
-    revalidate: 10, 
-  };
+          title: proposal.title,
+        })),
+      },
+      revalidate: 10,
+    };
+  }
 }

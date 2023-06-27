@@ -1,7 +1,7 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-19 09:00:03
- * @Description: 
+ * @Description:
  */
 // SPDX-License-Identifier: MIT
 
@@ -9,78 +9,72 @@ pragma solidity ^0.8.7;
 
 import "./IKeeperRegistry2_0.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
-contract KeeperManager{
-    IKeeperRegistry2_0 immutable public i_registry;
-    LinkTokenInterface public immutable i_link;
 
-    event pauseUpkeep(uint256 upkeepID);
-    event cancelUpkeep(uint256 upkeepID);
-    event addFoundUpkeep(uint256 upkeepID,uint256 amount);
-    event unpauseUpkeep(uint256 upkeepID);
-    event withdrawFundsUpkeep(uint256 upkeepID,address to);
+contract KeeperManager {
+  IKeeperRegistry2_0 public immutable i_registry;
+  LinkTokenInterface public immutable i_link;
 
-    error UpkeepIDNotFound();
-    error NotEoughtLink();
+  event pauseUpkeep(uint256 upkeepID);
+  event cancelUpkeep(uint256 upkeepID);
+  event addFoundUpkeep(uint256 upkeepID, uint256 amount);
+  event unpauseUpkeep(uint256 upkeepID);
+  event withdrawFundsUpkeep(uint256 upkeepID, address to);
 
+  error UpkeepIDNotFound();
+  error NotEoughtLink();
 
+  constructor(IKeeperRegistry2_0 _registry, LinkTokenInterface _link) {
+    i_registry = _registry;
+    i_link = _link;
+  }
 
-    constructor(IKeeperRegistry2_0 _registry,LinkTokenInterface _link) {
-      i_registry = _registry;
-      i_link = _link;
+  function pause(uint256 _upkeepID) external {
+    if (_upkeepID != 0) {
+      i_registry.pauseUpkeep(_upkeepID);
+      emit pauseUpkeep(_upkeepID);
+    } else {
+      revert UpkeepIDNotFound();
     }
+  }
 
-    function pause(uint256 _upkeepID) external {
-        if(_upkeepID !=0){
-            i_registry.pauseUpkeep(_upkeepID);
-            emit pauseUpkeep(_upkeepID);
-        }else{
-            revert UpkeepIDNotFound();
-        }
-   
-        
+  function cancel(uint256 _upkeepID) external {
+    if (_upkeepID != 0) {
+      i_registry.cancelUpkeep(_upkeepID);
+      emit cancelUpkeep(_upkeepID);
+    } else {
+      revert UpkeepIDNotFound();
     }
-    
-    function cancel(uint256 _upkeepID) external {
-        if(_upkeepID !=0){
-            i_registry.cancelUpkeep(_upkeepID);
-            emit cancelUpkeep(_upkeepID);
-        }else{
-            revert UpkeepIDNotFound();
-        }
-  
+  }
+
+  function addFound(uint256 amount, uint256 _upkeepID) external {
+    if (i_link.balanceOf(address(this)) < amount) {
+      revert NotEoughtLink();
     }
-
-    function addFound(uint256 amount,uint256 _upkeepID) external {
-        if(i_link.balanceOf(address(this))<amount){
-            revert NotEoughtLink();
-        }
-        if(_upkeepID !=0){
-            i_link.transferAndCall(address(i_registry), amount, abi.encode(_upkeepID));
-            emit addFoundUpkeep(_upkeepID,amount);
-        }else{
-            revert UpkeepIDNotFound();
-        }
+    if (_upkeepID != 0) {
+      i_link.transferAndCall(address(i_registry), amount, abi.encode(_upkeepID));
+      emit addFoundUpkeep(_upkeepID, amount);
+    } else {
+      revert UpkeepIDNotFound();
     }
+  }
 
-    function unpause(uint256 _upkeepID) external {
-        if(_upkeepID !=0){
-            i_registry.unpauseUpkeep(_upkeepID);
-            emit unpauseUpkeep(_upkeepID);
-        }else{
-            revert UpkeepIDNotFound();
-        }
+  function unpause(uint256 _upkeepID) external {
+    if (_upkeepID != 0) {
+      i_registry.unpauseUpkeep(_upkeepID);
+      emit unpauseUpkeep(_upkeepID);
+    } else {
+      revert UpkeepIDNotFound();
     }
+  }
 
-    function withdrawFunds(uint256 _upkeepID,address _to) external {
-        if(_upkeepID !=0){
-            i_registry.withdrawFunds(_upkeepID,_to);
-            emit withdrawFundsUpkeep(_upkeepID,_to);
-        }else{
-            revert UpkeepIDNotFound();
-        }
+  function withdrawFunds(uint256 _upkeepID, address _to) external {
+    if (_upkeepID != 0) {
+      i_registry.withdrawFunds(_upkeepID, _to);
+      emit withdrawFundsUpkeep(_upkeepID, _to);
+    } else {
+      revert UpkeepIDNotFound();
     }
-
-
+  }
 }
 // ////////////////////////////////////////test/////////////////
 // interface IKeeperRegistry {
@@ -92,12 +86,12 @@ contract KeeperManager{
 
 //     constructor(IKeeperRegistry _registry) {
 //       i_registry = _registry;
-  
+
 //     }
 
 //     function pause(uint256 _upkeepID) external {
-     
-//             i_registry.pauseUpkeep(_upkeepID);     
+
+//             i_registry.pauseUpkeep(_upkeepID);
 //     }
-    
+
 // }

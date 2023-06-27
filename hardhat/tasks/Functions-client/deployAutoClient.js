@@ -1,7 +1,7 @@
 /*
  * @Author: Wmengti 0x3ceth@gmail.com
  * @LastEditTime: 2023-05-25 14:32:48
- * @Description: 
+ * @Description:
  */
 const { types } = require("hardhat/config")
 const { networks } = require("../../networks")
