@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import {ContractNFT} from "./ContractNFT.sol";
-import {IContractNFTFactory} from "./interface/IContractNFTFactory.sol";
+import "./ContractNFT.sol";
+import "./interface/IContractNFTFactory.sol";
 
 contract ContractNFTFactory is IContractNFTFactory {
   // employer=>employee=>contractNFT
@@ -10,23 +10,20 @@ contract ContractNFTFactory is IContractNFTFactory {
   mapping(address => address[]) public employeeContract;
 
   //event list
-  event CreateContractNFT(address contractNFT, string contractName);
-
-  error IsErrorEmployeeAddress(address employeeAddress);
+  event CreateContractNFT(address indexed contractNFTAddress, string contractName);
 
   constructor() {}
 
   // font call
   function createTask(address _employeeAddress, string memory contractName) external override {
-    if (msg.sender == _employeeAddress) revert IsErrorEmployeeAddress(_employeeAddress);
+    require(msg.sender != _employeeAddress && _employeeAddress != address(0), "employeeAddress is error");
     ContractNFT contractNFT = new ContractNFT(contractName);
-
+    address contractNFTAddress = address(contractNFT);
+    emit CreateContractNFT(contractNFTAddress, contractName);
     contractNFT.safeMint(msg.sender);
-    employerContract[msg.sender].push(address(contractNFT));
+    employerContract[msg.sender].push(contractNFTAddress);
     contractNFT.safeMint(_employeeAddress);
-    employeeContract[_employeeAddress].push(address(contractNFT));
-
-    emit CreateContractNFT(address(contractNFT), contractName);
+    employeeContract[_employeeAddress].push(contractNFTAddress);
   }
 
   function getEmployerContracts(address _employer) public view override returns (address[] memory) {
