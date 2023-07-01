@@ -1,20 +1,22 @@
-require("@nomicfoundation/hardhat-toolbox")
-require("hardhat-contract-sizer")
-require("@openzeppelin/hardhat-upgrades")
-require("./tasks")
-require("hardhat-deploy")
-require("@chainlink/env-enc").config()
-const { networks } = require("./networks")
+require("@nomicfoundation/hardhat-toolbox");
+require("hardhat-contract-sizer");
+require("@openzeppelin/hardhat-upgrades");
+require("hardhat-gas-reporter");
+require("./tasks");
+require("hardhat-deploy");
+require("@chainlink/env-enc").config();
+const { networks } = require("./networks");
 
 // Enable gas reporting (optional)
-const REPORT_GAS = process.env.REPORT_GAS?.toLowerCase() === "true" ? true : false
+const REPORT_GAS = process.env.REPORT_GAS?.toLowerCase() === "true" ? true : false;
+const COINMARKETCAP = process.env.COINMARKETCAP;
 
 const SOLC_SETTINGS = {
   optimizer: {
     enabled: true,
     runs: 1_000,
   },
-}
+};
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -44,16 +46,22 @@ module.exports = {
     ],
   },
   networks: {
+    // hardhat: {
+    //   allowUnlimitedContractSize: true,
+    //   accounts: process.env.PRIVATE_KEY
+    //     ? [
+    //         {
+    //           privateKey: process.env.PRIVATE_KEY,
+    //           balance: "10000000000000000000000",
+    //         },
+    //       ]
+    //     : [],
+    // },
     hardhat: {
-      allowUnlimitedContractSize: true,
-      accounts: process.env.PRIVATE_KEY
-        ? [
-            {
-              privateKey: process.env.PRIVATE_KEY,
-              balance: "10000000000000000000000",
-            },
-          ]
-        : [],
+      chainId: 31337,
+    },
+    localhost: {
+      chainId: 31337,
     },
     goerli: {
       chainId: 5,
@@ -75,14 +83,25 @@ module.exports = {
     },
   },
   gasReporter: {
-    enabled: REPORT_GAS,
+    enabled: true,
     currency: "USD",
-    outputFile: "gas-report.txt",
+    // outputFile: "gas-report.txt",
+    coinmarketcap: COINMARKETCAP,
     noColors: true,
   },
   contractSizer: {
-    runOnCompile: false,
-    only: ["FunctionsConsumer", "AutomatedFunctionsConsumer", "FunctionsBillingRegistry"],
+    runOnCompile: true,
+    only: [
+      "AutomatedFunctions",
+      "ContractNFT",
+      "ContractNFTFactory",
+      "CreditToken",
+      "DAOVault",
+      "FuntionsFactory",
+      "KeeperAutoSelfRegister",
+      "SmartPayrollByTime",
+      "SmartPayrollFactory",
+    ],
   },
   paths: {
     sources: "./contracts",
@@ -99,4 +118,4 @@ module.exports = {
       1: 0,
     },
   },
-}
+};
